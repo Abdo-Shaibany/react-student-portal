@@ -5,6 +5,7 @@ import { WelcomePage } from './pages/WelcomPage';
 import StudentFormPage from './pages/StudentFormPage';
 import EmployeeLoginPage from './pages/LoginPage';
 import EmployeeLayout from './layouts/employee-layout';
+import { DashboardPage } from './pages/Dashboard';
 // Create these components in your project:
 // import DashboardPage from './pages/DashboardPage';
 // import DepartmentsPage from './pages/DepartmentsPage';
@@ -46,7 +47,7 @@ const employeeLayout = createRoute({
 const dashboardRoute = createRoute({
   getParentRoute: () => employeeLayout,
   path: '/dashboard',
-  component: StudentFormPage, // Use actual dashboard component
+  component: DashboardPage, // Use actual dashboard component
 });
 
 // Departments route (nested under admin-portal)
