@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 
 interface FormData {
   fullName: string;
@@ -62,14 +63,7 @@ export function StudentFormPage() {
             <Input
               id="phone"
               placeholder="712345678"
-              {...register("phone", {
-                required: "Phone is required",
-                pattern: {
-                  value: /^7[7380]\d{7}$/,
-                  message:
-                    "Invalid phone number. Must start with 7 followed by 7, 3, 8 or 0 and then 7 digits.",
-                },
-              })}
+              {...register("phone", YemenPhoneValidations)}
             />
             {errors.phone && (
               <span className="text-red-500 text-sm">

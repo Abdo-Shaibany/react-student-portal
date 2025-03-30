@@ -3,9 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 
 interface LoginFormData {
-  username: string;
+  phone: string;
   password: string;
 }
 
@@ -28,19 +29,19 @@ export function EmployeeLoginPage() {
       <Card className="max-w-md w-full p-6 shadow-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Employee Login</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Username */}
+          {/* Phone */}
           <div>
-            <Label htmlFor="username" className="block mb-1">
-              Username
+            <Label htmlFor="phone" className="block mb-1">
+              Phone
             </Label>
             <Input
-              id="username"
-              placeholder="Enter your username"
-              {...register("username", { required: "Username is required" })}
+              id="phone"
+              placeholder="712345678"
+              {...register("phone", YemenPhoneValidations)}
             />
-            {errors.username && (
+            {errors.phone && (
               <span className="text-red-500 text-sm">
-                {errors.username.message}
+                {errors.phone.message}
               </span>
             )}
           </div>
