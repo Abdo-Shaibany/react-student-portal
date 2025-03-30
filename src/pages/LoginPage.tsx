@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
+import { useNavigate } from "@tanstack/react-router";
 
 interface LoginFormData {
   phone: string;
@@ -11,6 +12,9 @@ interface LoginFormData {
 }
 
 export function EmployeeLoginPage() {
+  const navigate = useNavigate();
+
+  
   const {
     register,
     handleSubmit,
@@ -21,7 +25,7 @@ export function EmployeeLoginPage() {
 
   const onSubmit = (data: LoginFormData) => {
     console.log("Login submitted:", data);
-    // Perform login logic here (e.g., call an API)
+    navigate({ to: "/admin-portal/dashboard" });
   };
 
   return (
