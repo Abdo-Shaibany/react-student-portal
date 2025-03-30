@@ -37,7 +37,7 @@ export function WelcomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => navigate({ to: ".", search: { page: "employee-login" } })}
+                onClick={() => navigate({ to: '/employee-login' })}
               >
                 Employee Login
               </Button>

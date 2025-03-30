@@ -3,6 +3,7 @@ import { Outlet, RouterProvider } from '@tanstack/react-router';
 import { createRouter, createRoute, createRootRoute } from '@tanstack/react-router';
 import { WelcomePage } from './pages/WelcomPage';
 import StudentFormPage from './pages/StudentFormPage';
+import EmployeeLoginPage from './pages/LoginPage';
 
 // Define the root route
 const rootRoute = createRootRoute({
@@ -27,7 +28,7 @@ const studentFormRoute = createRoute({
 const employeeLoginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/employee-login',
-  component: WelcomePage,
+  component: EmployeeLoginPage,
 });
 
 // Create the route tree
