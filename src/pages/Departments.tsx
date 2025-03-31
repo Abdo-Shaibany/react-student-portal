@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { toast } from "sonner"
 import {
     Table,
     TableBody,
@@ -12,11 +13,11 @@ import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,32 +25,58 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-
-interface Department {
-    id: string
-    name: string
-    totalRequests: number
-}
+import { Department } from "@/models/Department.interface"
+import { departmentsList } from "@/api/mock/departments"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert } from "@/components/ui/alert"
+import { DepartmentForm } from "./DepartmentForm"
 
 export function DepartmentsPage() {
-    const [departments, setDepartments] = useState<Department[]>([
-        { id: "1", name: "Admissions", totalRequests: 24 },
-        { id: "2", name: "Registrar", totalRequests: 42 },
-        { id: "3", name: "Financial Aid", totalRequests: 15 },
-    ]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
+    const [departments, setDepartments] = useState<Department[]>([])
+    const [searchQuery, setSearchQuery] = useState("")
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isEditMode, setIsEditMode] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const [error, setError] = useState("")
+    const pageSize = 10
 
-    // Filter and sort departments
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (Math.random() < 0.3) {
+                setError("Failed to load departments. Please try refreshing the page.")
+            } else {
+                setDepartments(departmentsList)
+            }
+            setLoading(false)
+        }, 1500)
+
+        return () => clearTimeout(timer)
+    }, [])
+
     const filteredDepartments = departments
         .filter(dept => dept.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        .sort((a, b) =>
-            sortOrder === "asc" ?
-                a.totalRequests - b.totalRequests :
-                b.totalRequests - a.totalRequests)
+        .sort((a, b) => sortOrder === "asc" ? a.totalRequests - b.totalRequests : b.totalRequests - a.totalRequests)
+
+    const paginatedData = filteredDepartments.slice((page - 1) * pageSize, page * pageSize)
+
+    const handleDelete = (id: string) => {
+        const deletedDept = departments.find(d => d.id === id)
+        setDepartments(prev => prev.filter(dept => dept.id !== id))
+
+        toast("Department deleted", {
+            action: {
+                label: "Undo",
+                onClick: () => {
+                    if (deletedDept) {
+                        setDepartments(prev => [...prev, deletedDept])
+                    }
+                },
+            },
+        })
+    }
 
     const handleSubmit = (values: { name: string }) => {
         if (isEditMode && selectedDepartment) {
@@ -72,12 +99,27 @@ export function DepartmentsPage() {
         setIsDialogOpen(false)
     }
 
-    const handleDelete = (id: string) => {
-        setDepartments(prev => prev.filter(dept => dept.id !== id))
+    if (loading) {
+        return (
+            <div className="p-6 space-y-4">
+                <Skeleton className="h-10 w-[300px]" />
+                <div className="space-y-2">
+                    {[...Array(5)].map((_, i) => (
+                        <Skeleton key={i} className="h-12 w-full" />
+                    ))}
+                </div>
+            </div>
+        )
     }
 
     return (
         <div className="p-6 space-y-4">
+            {error && (
+                <Alert variant="destructive" className="mb-4">
+                    {error}
+                </Alert>
+            )}
+
             {/* Header with Search and Create Button */}
             <div className="flex items-center justify-between">
                 <Input
@@ -101,9 +143,15 @@ export function DepartmentsPage() {
                                 {isEditMode ? "Edit Department" : "Create New Department"}
                             </DialogTitle>
                         </DialogHeader>
+                        <DialogDescription className="sr-only">
+                            {isEditMode ? "Modify department details" : "Add a new department to the system"}
+                        </DialogDescription>
                         <DepartmentForm
                             department={selectedDepartment}
-                            onSubmit={handleSubmit}
+                            onSubmit={(values) => {
+                                handleSubmit(values);
+                                toast.success(`Department ${isEditMode ? 'updated' : 'created'}!`)
+                            }}
                         />
                     </DialogContent>
                 </Dialog>
@@ -126,7 +174,7 @@ export function DepartmentsPage() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {filteredDepartments.map((department) => (
+                    {paginatedData.map((department) => (
                         <TableRow key={department.id}>
                             <TableCell>{department.name}</TableCell>
                             <TableCell>{department.totalRequests}</TableCell>
@@ -159,6 +207,25 @@ export function DepartmentsPage() {
                 </TableBody>
             </Table>
 
+            {/* Pagination */}
+            <div className="flex justify-start gap-2">
+                <Button
+                    variant="outline"
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                >
+                    Previous
+                </Button>
+                <span className="flex items-center px-4">Page {page}</span>
+                <Button
+                    variant="outline"
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={page * pageSize >= filteredDepartments.length}
+                >
+                    Next
+                </Button>
+            </div>
+
             {/* Empty State */}
             {filteredDepartments.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
@@ -169,36 +236,3 @@ export function DepartmentsPage() {
     )
 }
 
-// Department Form Component
-function DepartmentForm({
-    department,
-    onSubmit,
-}: {
-    department?: Department | null
-    onSubmit: (values: { name: string }) => void
-}) {
-    const [name, setName] = useState(department?.name || "")
-
-    return (
-        <form
-            className="space-y-4"
-            onSubmit={(e) => {
-                e.preventDefault()
-                onSubmit({ name })
-            }}
-        >
-            <div className="space-y-2">
-                <Label htmlFor="name">Department Name</Label>
-                <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-            </div>
-            <Button type="submit" className="w-full">
-                {department ? "Save Changes" : "Create Department"}
-            </Button>
-        </form>
-    )
-}
