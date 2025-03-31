@@ -3,7 +3,7 @@ import { Department } from "./Department.interface"
 export interface User {
     id: string
     name: string
-    email: string
+    phone: string
     departmentId: string
     department?: Department
     totalRequests: number
