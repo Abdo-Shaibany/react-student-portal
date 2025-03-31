@@ -9,6 +9,7 @@ import { DashboardPage } from './pages/Dashboard';
 import { DepartmentsPage } from './pages/Departments/Departments';
 import { UsersPage } from './pages/Users/Users';
 import { RequestsPage } from './pages/Requests/Requests';
+import { RequestViewPage } from './pages/Requests/ViewRequest';
 
 // Define the root route
 const rootRoute = createRootRoute({
@@ -46,27 +47,33 @@ const employeeLayout = createRoute({
 // Dashboard route (nested under admin-portal)
 const dashboardRoute = createRoute({
   getParentRoute: () => employeeLayout,
-  path: '/dashboard',
+  path: 'dashboard',
   component: DashboardPage, // Use actual dashboard component
 });
 
 // Departments route (nested under admin-portal)
 const departmentsRoute = createRoute({
   getParentRoute: () => employeeLayout,
-  path: '/departments',
+  path: 'departments',
   component: DepartmentsPage, // Use actual departments component
 });
 
 const usersRoute = createRoute({
   getParentRoute: () => employeeLayout,
-  path: '/users',
+  path: 'users',
   component: UsersPage, // Use actual departments component
 });
 
 const requestsRoute = createRoute({
   getParentRoute: () => employeeLayout,
-  path: '/requests',
+  path: 'requests',
   component: RequestsPage, // Use actual departments component
+});
+
+const viewRequestRoute = createRoute({
+  getParentRoute: () => employeeLayout,
+  path: 'requests/$id',
+  component: RequestViewPage, // Use actual departments component
 });
 
 // Create the route tree with proper nesting
@@ -78,7 +85,8 @@ const routeTree = rootRoute.addChildren([
     dashboardRoute,
     departmentsRoute,
     usersRoute,
-    requestsRoute
+    requestsRoute,
+    viewRequestRoute
   ])
 ]);
 

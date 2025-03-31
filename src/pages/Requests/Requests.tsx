@@ -25,43 +25,20 @@ import {
 import { MoreHorizontal } from "lucide-react"
 import { departmentsList } from "@/api/mock/departments"
 import { usersList } from "@/api/mock/users"
-
-interface Request {
-  id: string
-  requestNumber: string
-  studentName: string
-  title: string
-  phone: string
-  email: string
-  createdAt: string
-  status: "pending" | "in-progress" | "completed"
-  department?: string
-  assignedTo?: string
-}
-
+import { Request } from "@/models/Request.interface"
+import { requestsList } from "@/api/mock/requests"
+import { useNavigate } from "@tanstack/react-router"
 
 export function RequestsPage() {
-  const [requests, setRequests] = useState<Request[]>([
-    {
-      id: "1",
-      requestNumber: "REQ-001",
-      studentName: "John Doe",
-      title: "Document Verification",
-      phone: "+123456789",
-      email: "john@uni.edu",
-      createdAt: "2024-03-01",
-      status: "pending",
-      department: "1",
-      assignedTo: "1"
-    },
-    // Add more mock data...
-  ])
+  const [requests, setRequests] = useState<Request[]>(requestsList)
   
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest")
   const [departmentFilter, setDepartmentFilter] = useState("all")
   const [employeeFilter, setEmployeeFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+
+  const navigate = useNavigate()
 
   // Mock chart data
   const chartData = [
@@ -77,8 +54,6 @@ export function RequestsPage() {
   const filteredRequests = requests
     .filter(request => {
       const matchesStatus = statusFilter === "all" || request.status === statusFilter
-      const matchesDepartment = departmentFilter === "all" || request.department === departmentFilter
-      const matchesEmployee = employeeFilter === "all" || request.assignedTo === employeeFilter
       const matchesSearch = [
         request.requestNumber,
         request.studentName,
@@ -86,7 +61,7 @@ export function RequestsPage() {
         request.email
       ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()))
       
-      return matchesStatus && matchesDepartment && matchesEmployee && matchesSearch
+      return matchesStatus && request.department && request.assignedTo && matchesSearch
     })
     .sort((a, b) => dateOrder === "newest" 
       ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -203,16 +178,18 @@ export function RequestsPage() {
                 </TableCell>
         
                   <TableCell>
-                    {departments.find(d => d.id === request.department)?.name}
+                    {request.department.name}
                   </TableCell>
                 
     
                   <TableCell>
                     <Select 
-                      value={request.assignedTo} 
+                      value={request.assignedTo.id} 
                       onValueChange={value => setRequests(prev => 
                         prev.map(req => 
-                          req.id === request.id ? {...req, assignedTo: value} : req
+                          req.id === request.id 
+                            ? {...req, assignedTo: users.find(emp => emp.id === value) || req.assignedTo} 
+                            : req
                         )
                       )}
                     >
@@ -235,7 +212,7 @@ export function RequestsPage() {
                       <MoreHorizontal className="h-4 w-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => {/* Implement view logic */}}>
+                      <DropdownMenuItem onClick={() => navigate({ to: `/admin-portal/requests/${request.id}` })}>
                         View Details
                       </DropdownMenuItem>
                     </DropdownMenuContent>
