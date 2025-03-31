@@ -1,4 +1,6 @@
-export const departmentsList = [
+import { Department } from "@/models/Department.interface";
+
+export const departmentsList: Department[] = [
     { id: "1", name: "Admissions", totalRequests: 24 },
     { id: "2", name: "Registrar", totalRequests: 42 },
     { id: "3", name: "Financial Aid", totalRequests: 15 },

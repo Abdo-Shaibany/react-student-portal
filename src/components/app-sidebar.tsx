@@ -37,7 +37,7 @@ const data = {
     },
     {
       title: "User Management",
-      url: "/user-management",
+      url: "/admin-portal/users",
       icon: Users,
     },
     {
