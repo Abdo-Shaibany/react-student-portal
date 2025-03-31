@@ -42,7 +42,7 @@ const data = {
     },
     {
       title: "Student Requests",
-      url: "/student-requests",
+      url: "/admin-portal/requests",
       icon: FileText,
       badge: {
         new: 5,

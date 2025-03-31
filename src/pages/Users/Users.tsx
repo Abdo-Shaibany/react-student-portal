@@ -113,7 +113,7 @@ export function UsersPage() {
           {filteredUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.name}</TableCell>
-              <TableCell>{user.phone}</TableCell>
+              <TableCell>{user.email}</TableCell>
               <TableCell>{user.department?.name ?? "unassing"}</TableCell>
               <TableCell>{user.totalRequests}</TableCell>
               <TableCell>

@@ -7,10 +7,8 @@ import EmployeeLoginPage from './pages/LoginPage';
 import EmployeeLayout from './layouts/employee-layout';
 import { DashboardPage } from './pages/Dashboard';
 import { DepartmentsPage } from './pages/Departments/Departments';
-import { UsersPage } from './pages/Users/users';
-// Create these components in your project:
-// import DashboardPage from './pages/DashboardPage';
-// import DepartmentsPage from './pages/DepartmentsPage';
+import { UsersPage } from './pages/Users/Users';
+import { RequestsPage } from './pages/Requests/Requests';
 
 // Define the root route
 const rootRoute = createRootRoute({
@@ -65,6 +63,12 @@ const usersRoute = createRoute({
   component: UsersPage, // Use actual departments component
 });
 
+const requestsRoute = createRoute({
+  getParentRoute: () => employeeLayout,
+  path: '/requests',
+  component: RequestsPage, // Use actual departments component
+});
+
 // Create the route tree with proper nesting
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -73,7 +77,8 @@ const routeTree = rootRoute.addChildren([
   employeeLayout.addChildren([
     dashboardRoute,
     departmentsRoute,
-    usersRoute
+    usersRoute,
+    requestsRoute
   ])
 ]);
 
