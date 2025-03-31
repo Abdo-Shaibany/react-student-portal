@@ -32,7 +32,7 @@ const data = {
     },
     {
       title: "Departments",
-      url: "/departments",
+      url: "/admin-portal/departments",
       icon: LayoutDashboard,
     },
     {

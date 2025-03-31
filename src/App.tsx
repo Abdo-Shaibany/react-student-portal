@@ -6,6 +6,7 @@ import StudentFormPage from './pages/StudentFormPage';
 import EmployeeLoginPage from './pages/LoginPage';
 import EmployeeLayout from './layouts/employee-layout';
 import { DashboardPage } from './pages/Dashboard';
+import { DepartmentsPage } from './pages/Departments';
 // Create these components in your project:
 // import DashboardPage from './pages/DashboardPage';
 // import DepartmentsPage from './pages/DepartmentsPage';
@@ -54,7 +55,7 @@ const dashboardRoute = createRoute({
 const departmentsRoute = createRoute({
   getParentRoute: () => employeeLayout,
   path: '/departments',
-  component: StudentFormPage, // Use actual departments component
+  component: DepartmentsPage, // Use actual departments component
 });
 
 // Create the route tree with proper nesting
