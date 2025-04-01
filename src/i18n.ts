@@ -63,6 +63,23 @@ const resources = {
         "userManagement": "User Management",
         "studentRequests": "Student Requests"
       },
+      'Search departments...': 'Search departments...',
+      'Create Department': 'Create Department',
+      'Edit Department': 'Edit Department',
+      'Create New Department': 'Create New Department',
+      'Modify department details': 'Modify department details',
+      'Add a new department to the system': 'Add a new department to the system',
+      'Department updated!': 'Department updated!',
+      'Department created!': 'Department created!',
+      'Department Name': 'Department Name',
+      'Total Requests': 'Total Requests',
+      'Actions': 'Actions',
+      'Edit': 'Edit',
+      'Delete': 'Delete',
+      'Previous': 'Previous',
+      'Next': 'Next',
+      'Page {{page}}': 'Page {{page}}',
+      'No departments found': 'No departments found',
     }
   },
   ar: {
@@ -125,7 +142,24 @@ const resources = {
         "departments": "الأقسام",
         "userManagement": "إدارة المستخدمين",
         "studentRequests": "طلبات الطلاب"
-      }
+      },
+      'Search departments...': 'ابحث عن الأقسام...',
+      'Create Department': 'أنشئ قسم',
+      'Edit Department': 'عدل القسم',
+      'Create New Department': 'أنشئ قسم جديد',
+      'Modify department details': 'قم بتغيير تفاصيل القسم',
+      'Add a new department to the system': 'أضف قسم جديد إلى النظام',
+      'Department updated!': 'تم تحديث القسم!',
+      'Department created!': 'تم إنشاء القسم!',
+      'Department Name': 'اسم القسم',
+      'Total Requests': 'إجمالي الطلبات',
+      'Actions': 'الإجراءات',
+      'Edit': 'تعديل',
+      'Delete': 'حذف',
+      'Previous': 'السابق',
+      'Next': 'التالي',
+      'Page {{page}}': 'الصفحة {{page}}',
+      'No departments found': 'لم يتم العثور على أقسام',
     }
   }
 };

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginFormData } from "@/core/models/LoginForm.interface";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { submitLoginRequest } from "@/services/loginService";
+import { submitLoginRequest } from "@/core/services/loginService";
 
 export function EmployeeLoginPage() {
   const navigate = useNavigate();

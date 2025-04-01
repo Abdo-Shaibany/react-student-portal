@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { RequestForm } from "@/core/models/Request.interface";
 import { useEffect, useState } from "react";
-import { submitStudentRequest } from "@/services/studentRequestService";
+import { submitStudentRequest } from "@/core/services/studentRequestService";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
-import { fetchDepartments } from "@/services/departmentService";
+import { fetchDepartments } from "@/core/services/departmentService";
 import { Department } from "@/core/models/Department.interface";
 
 export function StudentFormPage() {
