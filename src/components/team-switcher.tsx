@@ -4,8 +4,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useTranslation } from "react-i18next";
 
 export function SystemBrand() {
+  const { t } = useTranslation();
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -17,7 +20,7 @@ export function SystemBrand() {
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">My system</span>
+                <span className="truncate font-medium">{t('systemBrand.title')}</span>
               </div>
             </SidebarMenuButton>
       </SidebarMenuItem>

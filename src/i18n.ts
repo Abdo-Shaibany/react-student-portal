@@ -53,7 +53,16 @@ const resources = {
       "daysLate": "Days Late",
       "actions": "Actions",
       "viewDetails": "View Details",
-      "noLateRequestsFound": "No late requests found"
+      "noLateRequestsFound": "No late requests found",
+      "systemBrand": {
+        "title": "Student Request Managment"
+      },
+      "navMain": {
+        "dashboard": "Dashboard",
+        "departments": "Departments",
+        "userManagement": "User Management",
+        "studentRequests": "Student Requests"
+      },
     }
   },
   ar: {
@@ -107,7 +116,16 @@ const resources = {
       "daysLate": "أيام التأخير",
       "actions": "الإجراءات",
       "viewDetails": "عرض التفاصيل",
-      "noLateRequestsFound": "لم يتم العثور على طلبات متأخرة"
+      "noLateRequestsFound": "لم يتم العثور على طلبات متأخرة",
+      "systemBrand": {
+        "title": "نظام إدارة الطلبات الطلابية"
+      },
+      "navMain": {
+        "dashboard": "لوحة القيادة",
+        "departments": "الأقسام",
+        "userManagement": "إدارة المستخدمين",
+        "studentRequests": "طلبات الطلاب"
+      }
     }
   }
 };

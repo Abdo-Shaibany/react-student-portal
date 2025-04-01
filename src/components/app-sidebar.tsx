@@ -16,44 +16,46 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar"
-
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "771402072",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/admin-portal/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Departments",
-      url: "/admin-portal/departments",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "User Management",
-      url: "/admin-portal/users",
-      icon: Users,
-    },
-    {
-      title: "Student Requests",
-      url: "/admin-portal/requests",
-      icon: FileText,
-      badge: {
-        new: 5,
-        late: 2
-      }
-    }
-  ]
-}
+import { useTranslation } from "react-i18next"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const side = localStorage.getItem('i18nextLng') === 'ar' ? 'right' : 'left';
+
+  const { t } = useTranslation();
+
+  const data = {
+    user: {
+      name: "shadcn",
+      email: "771402072",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    navMain: [
+      {
+        title: t('navMain.dashboard'),
+        url: "/admin-portal/dashboard",
+        icon: Home,
+      },
+      {
+        title: t('navMain.departments'),
+        url: "/admin-portal/departments",
+        icon: LayoutDashboard,
+      },
+      {
+        title: t('navMain.userManagement'),
+        url: "/admin-portal/users",
+        icon: Users,
+      },
+      {
+        title: t('navMain.studentRequests'),
+        url: "/admin-portal/requests",
+        icon: FileText,
+        badge: {
+          new: 5,
+          late: 2
+        }
+      }
+    ]
+  }
 
   return (
     <Sidebar collapsible="offcanvas" side={side} {...props}>
