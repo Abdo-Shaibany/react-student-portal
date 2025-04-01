@@ -40,7 +40,7 @@ import { RequestStatus } from "@/core/enum/requestStatus";
 export function RequestsPage() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [statusFilter, setStatusFilter] = useState<RequestStatus>(RequestStatus.ALL);
-  const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest");
+  const [dateOrder, setDateOrder] = useState<"desc" | "asc">("asc");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [employeeFilter, setEmployeeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,7 +60,7 @@ export function RequestsPage() {
       try {
         setLoading(true)
         const report = await fetchRequestCountsDaily();
-        setChartData(report.data);
+        setChartData(report);
 
         const _users = await fetchUsers();
         setUsers(_users);
@@ -85,7 +85,7 @@ export function RequestsPage() {
     const fetchFilteredRequests = async () => {
       try {
         setLoading(true);
-        const values = await fetchRequests({selectedDepartment: departmentFilter, status: statusFilter, searchQuery, dateOrder});
+        const values = await fetchRequests({selectedDepartment: departmentFilter, status: statusFilter, searchQuery, dateOrder, assignToId: employeeFilter});
         setRequests(values.data);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchRequests"));
@@ -95,7 +95,7 @@ export function RequestsPage() {
     };
 
     fetchFilteredRequests();
-  }, [departmentFilter, statusFilter, searchQuery, dateOrder, t]);
+  }, [departmentFilter, statusFilter, searchQuery, dateOrder, t, employeeFilter]);
 
     if (loading) {
       return (
@@ -152,13 +152,13 @@ export function RequestsPage() {
           </SelectContent>
         </Select>
 
-        <Select value={dateOrder} onValueChange={(value) => setDateOrder(value as "oldest" | "newest")}>
+        <Select value={dateOrder} onValueChange={(value) => setDateOrder(value as "asc" | "desc")}>
           <SelectTrigger>
             <SelectValue placeholder={t("sort.date")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">{t("sort.newestFirst")}</SelectItem>
-            <SelectItem value="oldest">{t("sort.oldestFirst")}</SelectItem>
+            <SelectItem value="desc">{t("sort.newestFirst")}</SelectItem>
+            <SelectItem value="asc">{t("sort.oldestFirst")}</SelectItem>
           </SelectContent>
         </Select>
 

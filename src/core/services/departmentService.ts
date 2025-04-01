@@ -38,6 +38,7 @@ export async function deleteDepartmentById(id: string): Promise<void> {
         method: "DELETE",
         headers: getAuthHeaders(),
     });
+
     if (!response.ok) {
         throw new Error("Failed to delete department");
     }

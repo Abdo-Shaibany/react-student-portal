@@ -19,16 +19,20 @@ export async function fetchRequests(params: {
     dateOrder?: string;
     page?: number;
     pageSize?: number;
+    assignToId?: string;
 }): Promise<{ data: Request[] }> {
-
     const queryParams = new URLSearchParams();
     const filters: any = {};
+    const orderBy: any = {}
 
     if (params.selectedDepartment && params.selectedDepartment !== 'all') filters.departmentId = params.selectedDepartment;
     if (params.status && params.status !== 'all') filters.status = params.status;
-    if (params.dateOrder) filters.createAtDate = params.dateOrder;
+    if (params.assignToId && params.assignToId !== 'all') filters.assignedToId = params.assignToId;
+    if (params.dateOrder) orderBy.createdAtDate = params.dateOrder;
 
     queryParams.append("filters", JSON.stringify(filters));
+    queryParams.append("orderBy", JSON.stringify(orderBy));
+
     if (params.searchQuery) queryParams.append("search", params.searchQuery);
     if (params.page) queryParams.append("page", String(params.page));
     if (params.pageSize) queryParams.append("pageSize", String(params.pageSize));
@@ -43,7 +47,7 @@ export async function fetchRequests(params: {
     return await response.json();
 }
 
-export async function fetchRequestCountsDaily(): Promise<{ data: RequestDailyCount[] }> {
+export async function fetchRequestCountsDaily(): Promise<RequestDailyCount[]> {
     const response = await fetch(`${BASE_URL}/requests/daily-count`, {
         method: "GET",
         headers: getAuthHeaders(),

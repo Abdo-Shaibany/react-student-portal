@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Department,  DepartmentForm as FormData } from "@/core/models/Department.interface"
+import { Department, DepartmentForm as FormData } from "@/core/models/Department.interface"
 import { useTranslation } from "react-i18next";
 import { useForm, } from "react-hook-form";
 
