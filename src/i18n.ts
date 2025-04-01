@@ -83,12 +83,41 @@ const resources = {
       "form": {
         "departmentName": "Department Name",
         "saveChanges": "Save Changes",
-        "createDepartment": "Create Department"
+        "createDepartment": "Create Department",
+        "fullName": "Full Name",
+        "phone": "Phone",
+        "password": "Password",
+        "department": "Department",
+        "selectDepartment": "Select department",
+        "createUser": "Create User",
+        "editUser": "Edit User",
+        "createNewUser": "Create New User",
+        "searchUsers": "Search users...",
+        "name": "Name",
+        "requestsHandled": "Requests Handled",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "noUsersFound": "No users found",
+        "unassigned": "Unassigned"
       },
       "validation": {
-        "nameRequired": "Department name is required",
-        "nameMin": "Name must be at least 3 characters"
+        "nameMin": "Name must be at least 3 characters",
+        "nameRequired": "Name is required",
+        "passwordRequired": "Password is required",
+        "departmentRequired": "Department is required"
       },
+      "loading": "Loading...",
+      "error": {
+        "fetchUsers": "Failed to fetch users",
+        "submitUser": "Failed to submit user",
+        "deleteUser": "Failed to delete user"
+      },
+      "success": {
+        "userUpdated": "User updated successfully",
+        "userCreated": "User created successfully",
+        "userDeleted": "User deleted successfully"
+      }
     }
   },
   ar: {
@@ -172,12 +201,41 @@ const resources = {
       "form": {
         "departmentName": "اسم القسم",
         "saveChanges": "حفظ التغييرات",
-        "createDepartment": "إنشاء قسم"
+        "createDepartment": "إنشاء قسم",
+        "fullName": "الاسم الكامل",
+        "phone": "الهاتف",
+        "password": "كلمة المرور",
+        "department": "القسم",
+        "selectDepartment": "اختر القسم",
+        "createUser": "إنشاء مستخدم",
+        "editUser": "تعديل المستخدم",
+        "createNewUser": "إنشاء مستخدم جديد",
+        "searchUsers": "ابحث عن المستخدمين...",
+        "name": "الاسم",
+        "requestsHandled": "الطلبات المعالجة",
+        "actions": "الإجراءات",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "noUsersFound": "لم يتم العثور على مستخدمين",
+        "unassigned": "غير معين"
       },
       "validation": {
-        "nameRequired": "اسم القسم مطلوب",
-        "nameMin": "يجب أن يكون الاسم 3 أحرف على الأقل"
+        "nameMin": "يجب أن يكون الاسم 3 أحرف على الأقل",
+        "nameRequired": "الاسم مطلوب",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "departmentRequired": "القسم مطلوب"
       },
+      "loading": "جار التحميل...",
+      "error": {
+        "fetchUsers": "فشل في جلب المستخدمين",
+        "submitUser": "فشل في إرسال بيانات المستخدم",
+        "deleteUser": "فشل في حذف المستخدم"
+      },
+      "success": {
+        "userUpdated": "تم تعديل المستخدم بنجاح",
+        "userCreated": "تم إنشاء المستخدم بنجاح",
+        "userDeleted": "تم حذف المستخدم بنجاح"
+      }
     },
   }
 };

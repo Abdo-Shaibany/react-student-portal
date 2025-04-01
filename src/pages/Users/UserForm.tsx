@@ -3,13 +3,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Department } from "@/core/models/Department.interface"
-import { User } from "@/core/models/User.interface"
-import { useState } from "react"
+import { User, UserFormData } from "@/core/models/User.interface"
+import { YemenPhoneValidations } from "@/core/validations/phone.validatation"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
-// TODO: handle language
-// TODO: handle form vlaidation with useForm
-// TODO: change email to phone field and add yemen phone number validation :)
-// TODO: handle modeling the form data
 export function UserForm({
     user,
     departments,
@@ -17,80 +15,90 @@ export function UserForm({
   }: {
     user?: User | null
     departments: Department[]
-    onSubmit: (values: User) => void
+    onSubmit: (values: UserFormData) => void
   }) {
-    const [name, setName] = useState(user?.name || "")
-    const [email, setEmail] = useState(user?.email || "")
-    const [password, setPassword] = useState("")
-    const [department, setDepartment] = useState(user?.department)
-  
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      onSubmit({
-        id: user?.id || "",
-        name,
-        email,
-        password: password,
-        departmentId: department?.id ?? "0",
-        totalRequests: user?.totalRequests || 0
-      })
-    }
+    const { t } = useTranslation();
+
+    const {
+      control,
+      register,
+      handleSubmit,
+      formState: { errors, isValid },
+    } = useForm<UserFormData>({
+      mode: "onChange",
+      defaultValues: {
+        name: user?.name || "",
+        phone: user?.phone || "",
+        password: "",
+        departmentId: user?.department?.id || "",
+      },
+    });
+
+
+    const submitHandler: SubmitHandler<UserFormData> = (data) => {
+      onSubmit(data);
+    };
   
     return (
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit(submitHandler)}>
+      <div className="space-y-2">
+        <Label htmlFor="name">{t("form.fullName")}</Label>
+        <Input
+          id="name"
+          {...register("name", { required: t("validation.nameRequired") })}
+        />
+        {errors.name && <p className="text-red-600 text-sm">{errors.name.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="phone">{t("form.phone")}</Label>
+        <Input
+          id="phone"
+          {...register("phone", YemenPhoneValidations)}
+        />
+        {errors.phone && <p className="text-red-600 text-sm">{errors.phone.message}</p>}
+      </div>
+
+      {/* Show password field only when creating a new user */}
+      {!user && (
         <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="password">{t("form.password")}</Label>
           <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            id="password"
+            type="password"
+            {...register("password", { required: t("validation.passwordRequired") })}
           />
+          {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
         </div>
-  
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-  
-        {!user && (
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-        )}
-  
-        <div className="space-y-2">
-          <Label>Department</Label>
-          <Select value={department?.id} onValueChange={(id) => setDepartment(departments.find(dept => dept.id === id))}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select department" />
-            </SelectTrigger>
-            <SelectContent>
-              {departments.map((dept) => (
-                <SelectItem key={dept.id} value={dept.id}>
-                  {dept.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-  
-        <Button type="submit" className="w-full">
-          {user ? "Save Changes" : "Create User"}
-        </Button>
-      </form>
+      )}
+
+      <div className="space-y-2">
+        <Label>{t("form.department")}</Label>
+        <Controller
+          name="departmentId"
+          control={control}
+          rules={{ required: t("validation.departmentRequired") }}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder={t("form.selectDepartment")} />
+              </SelectTrigger>
+              <SelectContent>
+                {departments.map((dept) => (
+                  <SelectItem key={dept.id} value={dept.id!}>
+                    {dept.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.departmentId && <p className="text-red-600 text-sm">{errors.departmentId.message}</p>}
+      </div>
+
+      <Button type="submit" className="w-full" disabled={!isValid}>
+        {user ? t("form.saveChanges") : t("form.createUser")}
+      </Button>
+    </form>
     )
   }
