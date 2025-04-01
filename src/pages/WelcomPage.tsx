@@ -2,30 +2,18 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ToggleLanguage } from "@/components/toggle-language";
 
 export function WelcomePage() {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-
-  const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "ar" : "en";
-    i18n.changeLanguage(newLang);
-    
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
-    localStorage.setItem("i18nextLng", newLang);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full space-y-8">
         {/* Language Toggle Button */}
-        <div className="flex justify-end">
-          <Button onClick={toggleLanguage}>
-            {/* This could be replaced with an icon if desired */}
-            {i18n.language === "en" ? "عربي" : "English"}
-          </Button>
-        </div>
+        <ToggleLanguage></ToggleLanguage>
 
         <h1 className="text-4xl font-bold text-center text-slate-800 mb-12">
           {t("welcome")}

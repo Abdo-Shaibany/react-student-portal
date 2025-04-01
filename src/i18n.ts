@@ -130,8 +130,9 @@ const resources = {
         "all": "All Statuses",
         "pending": "Pending",
         "inProgress": "In Progress",
-        "completed": "Completed"
+        "completed": "Completed",
       },
+
       "sort": {
         "date": "Sort by date",
         "newestFirst": "Newest First",
@@ -156,6 +157,32 @@ const resources = {
       },
       "department.all": "All Departments",
       "employee.all": "All Employees",
+      "button": {
+        "changeStatus": "Change Status",
+        "updateStatus": "Update Status"
+      },
+      "dialog": {
+        "updateRequestStatus": "Update Request Status",
+        "addStatusDescription": "Add a new status to the request"
+      },
+      "select": {
+        "newStatus": "Select new status"
+      },
+      "placeholder": {
+        "addComment": "Add comment..."
+      },
+
+      "accordion": {
+        "studentInformation": "Student Information",
+        "requestTitle": "Request Title",
+        "message": "Message",
+        "attachedFiles": "Attached Files ({{count}})",
+        "statusHistory": "Status History"
+      },
+      "label": {
+        "name": "Name",
+        "phone": "Phone"
+      }
     }
   },
   ar: {
@@ -312,6 +339,31 @@ const resources = {
       },
       "department.all": "جميع الاقسام",
       "employee.all": "جميع الموظفين",
+      "button": {
+        "changeStatus": "تغيير الحالة",
+        "updateStatus": "تحديث الحالة"
+      },
+      "dialog": {
+        "updateRequestStatus": "تحديث حالة الطلب",
+        "addStatusDescription": "أضف حالة جديدة للطلب"
+      },
+      "select": {
+        "newStatus": "اختر الحالة الجديدة"
+      },
+      "placeholder": {
+        "addComment": "أضف تعليق..."
+      },
+      "accordion": {
+        "studentInformation": "معلومات الطالب",
+        "requestTitle": "عنوان الطلب",
+        "message": "الرسالة",
+        "attachedFiles": "الملفات المرفقة ({{count}})",
+        "statusHistory": "تاريخ الحالة"
+      },
+      "label": {
+        "name": "الاسم",
+        "phone": "الهاتف"
+      }
     },
   }
 };

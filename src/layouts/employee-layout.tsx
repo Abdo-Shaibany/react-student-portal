@@ -17,6 +17,7 @@ import { getBreadcrumbItems } from "@/lib/breadcrumb"
 import { Outlet } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
+import { ToggleLanguage } from "@/components/toggle-language"
 
 // TODO: handle language
 export default function EmployeeLayout() {
@@ -63,6 +64,8 @@ export default function EmployeeLayout() {
               ))}
             </BreadcrumbList>
           </Breadcrumb>
+          <div className="flex-1"></div>
+          <ToggleLanguage></ToggleLanguage>
         </header>
         <Outlet />
       </SidebarInset>
