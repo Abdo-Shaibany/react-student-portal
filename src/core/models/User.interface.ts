@@ -1,7 +1,7 @@
 import { Department } from "./Department.interface"
 
 export interface User {
-    id: string
+    id?: string
     name: string
     phone: string
     departmentId: string

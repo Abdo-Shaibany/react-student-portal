@@ -1,4 +1,5 @@
-import { Request, RequestStatus } from "@/core/models/Request.interface";
+import { RequestStatus } from "@/core/enum/requestStatus";
+import { Request, } from "@/core/models/Request.interface";
 
 export const requestsList: Request[] = [
     {

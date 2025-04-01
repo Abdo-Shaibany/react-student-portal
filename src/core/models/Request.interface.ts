@@ -1,3 +1,4 @@
+import { RequestStatus } from "../enum/requestStatus"
 import { Department } from "./Department.interface"
 import { User } from "./User.interface"
 
@@ -31,8 +32,3 @@ export interface RequestForm {
     fileUpload?: FileList;
 }
 
-export enum RequestStatus {
-    PENDING = "pending",
-    IN_PROGRESS = "inProgress",
-    COMPLETED = "completed",
-}

@@ -34,12 +34,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { fetchRequests } from "@/core/services/requestService"
-import { Request, RequestStatus } from "@/core/models/Request.interface"
+import { Request } from "@/core/models/Request.interface"
 import { fetchDepartmentsReport } from "@/core/services/departmentService"
 import { DepartmentReport } from "@/core/models/Department.interface"
 import { useTranslation } from "react-i18next"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
+import { RequestStatus } from "@/core/enum/requestStatus"
 
 export function DashboardPage() {
   const [selectedDepartment, setSelectedDepartment] = useState("all")

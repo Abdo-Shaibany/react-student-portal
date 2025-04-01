@@ -30,6 +30,7 @@ import { departmentsList } from "@/api/mock/departments";
 import { UserForm } from "./UserForm";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { fetchUsers } from "@/core/services/usersService";
 
 export function UsersPage() {
   const { t } = useTranslation();
@@ -41,22 +42,11 @@ export function UsersPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Simulate fetching users from the backend with search and order
   useEffect(() => {
-    setLoading(true);
-    const fetchUsers = async () => {
+    const getUsers = async () => {
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const filtered = usersList
-          .filter((user) =>
-            user.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-          .sort((a, b) =>
-            sortOrder === "asc"
-              ? a.totalRequests - b.totalRequests
-              : b.totalRequests - a.totalRequests
-          );
+        setLoading(true)
+        const filtered = await fetchUsers(searchQuery, sortOrder);
         setUsers(filtered);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchUsers"));
@@ -64,7 +54,7 @@ export function UsersPage() {
         setLoading(false);
       }
     };
-    fetchUsers();
+    getUsers();
   }, [searchQuery, sortOrder, t]);
 
   // Handle create and update

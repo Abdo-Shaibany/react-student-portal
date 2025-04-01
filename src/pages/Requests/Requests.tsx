@@ -29,6 +29,7 @@ import { Request } from "@/core/models/Request.interface";
 import { requestsList } from "@/api/mock/requests";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { isAdmin } from "@/core/services/loginService";
 
 export function RequestsPage() {
   const [requests] = useState<Request[]>(requestsList);
@@ -39,6 +40,8 @@ export function RequestsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const admin = isAdmin()
 
   // Mock chart data
   const chartData = [
@@ -71,7 +74,7 @@ export function RequestsPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Chart Section */}
-      <div className="bg-background p-4 rounded-lg border">
+      {admin && <div className="bg-background p-4 rounded-lg border">
         <h2 className="text-lg font-semibold mb-4">
           {t("chart.requestsPerDay")}
         </h2>
@@ -86,10 +89,18 @@ export function RequestsPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div>}
 
       {/* Filters Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="flex flex-wrap gap-4">
+
+        <Input
+          placeholder={t("search.requests")}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="md:flex-1 w-full"
+        />
+
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.status")} />
@@ -112,7 +123,7 @@ export function RequestsPage() {
           </SelectContent>
         </Select>
 
-        <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+        {admin && <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.department")} />
           </SelectTrigger>
@@ -124,9 +135,9 @@ export function RequestsPage() {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select>}
 
-        <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
+        {admin && <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.employee")} />
           </SelectTrigger>
@@ -138,13 +149,8 @@ export function RequestsPage() {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select>}
 
-        <Input
-          placeholder={t("search.requests")}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
       </div>
 
       {/* Table Section */}
@@ -175,19 +181,18 @@ export function RequestsPage() {
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      request.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : request.status === "inProgress"
+                    className={`px-2 py-1 rounded-full text-xs ${request.status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : request.status === "inProgress"
                         ? "bg-blue-100 text-blue-800"
                         : "bg-green-100 text-green-800"
-                    }`}
+                      }`}
                   >
                     {request.status === "pending"
                       ? t("status.pending")
                       : request.status === "inProgress"
-                      ? t("status.inProgress")
-                      : t("status.completed")}
+                        ? t("status.inProgress")
+                        : t("status.completed")}
                   </span>
                 </TableCell>
                 <TableCell>{request.department.name}</TableCell>

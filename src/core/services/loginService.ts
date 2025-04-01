@@ -1,6 +1,7 @@
 // src/services/studentRequestService.ts
 
 import { LoginFormData } from "@/core/models/LoginForm.interface";
+import { NavigateFunction } from "react-router-dom";
 
 export function submitLoginRequest(formData: LoginFormData): Promise<{ requestNumber: number }> {
     return new Promise((resolve, reject) => {
@@ -16,4 +17,17 @@ export function submitLoginRequest(formData: LoginFormData): Promise<{ requestNu
             reject(new Error("Failed to submit request"));
         }, 2000);
     });
+}
+
+export function logout(navigate: NavigateFunction) {
+    localStorage.removeItem('token');
+    navigate('/');
+}
+
+export function isAuth() {
+    return true;
+}
+
+export function isAdmin() {
+    return true;
 }
