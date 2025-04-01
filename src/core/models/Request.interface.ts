@@ -32,3 +32,5 @@ export interface RequestForm {
     fileUpload?: FileList;
 }
 
+export interface RequestDailyCount { date: string, count: number }
+

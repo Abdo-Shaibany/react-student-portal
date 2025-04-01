@@ -1,16 +1,18 @@
 import { usersList } from "@/api/mock/users";
 import { User, UserFormData } from "../models/User.interface";
 
-export function fetchUsers(searchQuery: string, sortOrder: string): Promise<User[]> {
+export function fetchUsers(searchQuery?: string, sortOrder?: string): Promise<User[]> {
     return Promise.resolve(
-        usersList
-            .filter((user) =>
-                user.name.toLowerCase().includes(searchQuery.toLowerCase())
+        (usersList ?? [])
+            .filter(
+                (user) =>
+                    !searchQuery ||
+                    user.name.toLowerCase().includes(searchQuery.toLowerCase())
             )
             .sort((a, b) =>
                 sortOrder === "asc"
-                    ? a.totalRequests - b.totalRequests
-                    : b.totalRequests - a.totalRequests
+                    ? (a.totalRequests ?? 0) - (b.totalRequests ?? 0)
+                    : (b.totalRequests ?? 0) - (a.totalRequests ?? 0)
             )
     );
 }

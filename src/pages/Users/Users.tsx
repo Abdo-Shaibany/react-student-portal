@@ -30,7 +30,7 @@ import { departmentsList } from "@/api/mock/departments";
 import { UserForm } from "./UserForm";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { fetchUsers } from "@/core/services/usersService";
+import { createUser, deleteUser, fetchUsers, updateUser } from "@/core/services/usersService";
 
 export function UsersPage() {
   const { t } = useTranslation();
@@ -57,20 +57,14 @@ export function UsersPage() {
     getUsers();
   }, [searchQuery, sortOrder, t]);
 
-  // Handle create and update
-  const handleSubmit = (values: UserFormData) => {
+  const handleSubmit = async (values: UserFormData) => {
     setLoading(true);
     try {
       if (isEditMode && selectedUser) {
-        setUsers((prev) =>
-          prev.map((user) => (user.id === selectedUser.id ? { ...user, ...values } : user))
-        );
+        await updateUser(values.id!, values);
         toast.success(t("success.userUpdated"));
       } else {
-        setUsers((prev) => [
-          ...prev,
-          { ...values, id: (prev.length + 1).toString(), totalRequests: 0 },
-        ]);
+        await createUser(values);
         toast.success(t("success.userCreated"));
       }
     } catch (error: any) {
@@ -82,19 +76,19 @@ export function UsersPage() {
   };
 
   // Handle delete
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     setLoading(true);
     try {
-      setUsers((prev) => prev.filter((user) => user.id !== id));
+      await deleteUser(id);
       toast.success(t("success.userDeleted"));
+      const filtered = await fetchUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.deleteUser"));
     } finally {
       setLoading(false);
     }
   };
-
-  const filteredUsers = users;
 
   return (
     <div className="p-6 space-y-4">
@@ -156,7 +150,7 @@ export function UsersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.phone}</TableCell>
@@ -179,7 +173,7 @@ export function UsersPage() {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-red-600"
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => handleDelete(user.id!)}
                       >
                         {t("form.delete")}
                       </DropdownMenuItem>
@@ -193,7 +187,7 @@ export function UsersPage() {
       )}
 
       {/* Empty State */}
-      {filteredUsers.length === 0 && (
+      {users.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           {t("form.noUsersFound")}
         </div>

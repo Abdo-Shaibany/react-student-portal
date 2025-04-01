@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import {
   Table,
@@ -23,53 +24,92 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { departmentsList } from "@/api/mock/departments";
-import { usersList } from "@/api/mock/users";
-import { Request } from "@/core/models/Request.interface";
+import { Request, RequestDailyCount } from "@/core/models/Request.interface";
 import { requestsList } from "@/api/mock/requests";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAdmin } from "@/core/services/loginService";
+import { fetchRequestCountsDaily, fetchRequests } from "@/core/services/requestService";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Department } from "@/core/models/Department.interface";
+import { User } from "@/core/models/User.interface";
+import { fetchUsers } from "@/core/services/usersService";
+import { fetchDepartments } from "@/core/services/departmentService";
+import { RequestStatus } from "@/core/enum/requestStatus";
 
 export function RequestsPage() {
-  const [requests] = useState<Request[]>(requestsList);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [requests, setRequests] = useState<Request[]>(requestsList);
+  const [statusFilter, setStatusFilter] = useState<RequestStatus>(RequestStatus.ALL);
   const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [employeeFilter, setEmployeeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const admin = isAdmin()
+  const admin = isAdmin();
 
-  // Mock chart data
-  const chartData = [
-    { date: "2024-03-01", count: 12 },
-    { date: "2024-03-02", count: 18 },
-    { date: "2024-03-03", count: 9 },
-  ];
+  const [chartData, setChartData] = useState<RequestDailyCount[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
-  // Use static lists for departments and users
-  const departments = departmentsList;
-  const users = usersList;
+  useEffect(() => {
+    if(!admin) return;
+    const fetchChartData = async () => {
+      try {
+        setLoading(true)
+        const report = await fetchRequestCountsDaily();
+        setChartData(report.data);
 
-  // Filter and sort requests
-  const filteredRequests = requests
-    .filter(request => {
-      const matchesStatus = statusFilter === "all" || request.status === statusFilter;
-      const matchesSearch = [
-        request.requestNumber,
-        request.studentName,
-        request.phone,
-      ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesStatus && request.department && request.assignedTo && matchesSearch;
-    })
-    .sort((a, b) =>
-      dateOrder === "newest"
-        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+        const _users = await fetchUsers();
+        setUsers(_users);
+
+        const _department = await fetchDepartments();
+        setDepartments(_department);
+
+        setLoading(false)
+      } catch (error: any) {
+        toast.error(error.message || t("error.fetchUsers"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChartData();
+  }, [admin, t]);
+
+
+
+  useEffect(() => {
+    const fetchFilteredRequests = async () => {
+      try {
+        setLoading(true);
+        const values = await fetchRequests(departmentFilter, statusFilter, searchQuery, dateOrder);
+        setRequests(values.data);
+      } catch (error: any) {
+        toast.error(error.message || t("error.fetchRequests"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredRequests();
+  }, [departmentFilter, statusFilter, searchQuery, dateOrder, t]);
+
+    if (loading) {
+      return (
+          <div className="p-6 space-y-4">
+              <Skeleton className="h-10 w-[300px]" />
+              <div className="space-y-2">
+                  {[...Array(5)].map((_, i) => (
+                      <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+              </div>
+          </div>
+      )
+    }
 
   return (
     <div className="p-6 space-y-6">
@@ -101,15 +141,15 @@ export function RequestsPage() {
           className="md:flex-1 w-full"
         />
 
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value: RequestStatus) => setStatusFilter(value)}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.status")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{t("status.all")}</SelectItem>
-            <SelectItem value="pending">{t("status.pending")}</SelectItem>
-            <SelectItem value="in-progress">{t("status.inProgress")}</SelectItem>
-            <SelectItem value="completed">{t("status.completed")}</SelectItem>
+            <SelectItem value={RequestStatus.ALL}>{t("status.all")}</SelectItem>
+            <SelectItem value={RequestStatus.PENDING}>{t(`status.${RequestStatus.PENDING}`)}</SelectItem>
+            <SelectItem value={RequestStatus.IN_PROGRESS}>{t(`status.${RequestStatus.IN_PROGRESS}`)}</SelectItem>
+            <SelectItem value={RequestStatus.COMPLETED}>{t(`status.${RequestStatus.COMPLETED}`)}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -144,7 +184,7 @@ export function RequestsPage() {
           <SelectContent>
             <SelectItem value="all">{t("employee.all")}</SelectItem>
             {users.map((emp) => (
-              <SelectItem key={emp.id} value={emp.id}>
+              <SelectItem key={emp.id} value={emp.id!}>
                 {emp.name}
               </SelectItem>
             ))}
@@ -170,7 +210,7 @@ export function RequestsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredRequests.map((request) => (
+            {requests.map((request) => (
               <TableRow key={request.id}>
                 <TableCell>{request.requestNumber}</TableCell>
                 <TableCell>{request.studentName}</TableCell>
