@@ -121,7 +121,7 @@ export function DepartmentsPage() {
     return (
         <div className="p-6 space-y-4">
         {/* Header with Search and Create Button */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <Input
             placeholder={t('Search departments...')}
             className="max-w-xs"

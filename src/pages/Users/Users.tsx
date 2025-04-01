@@ -109,8 +109,8 @@ export function UsersPage() {
   return (
     <div className="p-6 space-y-4">
       {/* Header with Search and Create Button */}
-      <div className="flex items-center justify-between">
-        <Input
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <Input
           placeholder={t("form.searchUsers")}
           className="max-w-xs"
           value={searchQuery}

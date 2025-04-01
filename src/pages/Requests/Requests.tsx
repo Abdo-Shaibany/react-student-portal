@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { useState } from "react";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import {
   Table,
   TableBody,
@@ -7,75 +7,67 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
-import { departmentsList } from "@/api/mock/departments"
-import { usersList } from "@/api/mock/users"
-import { Request } from "@/core/models/Request.interface"
-import { requestsList } from "@/api/mock/requests"
-import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next"
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { departmentsList } from "@/api/mock/departments";
+import { usersList } from "@/api/mock/users";
+import { Request } from "@/core/models/Request.interface";
+import { requestsList } from "@/api/mock/requests";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-// TODO: handle language
 export function RequestsPage() {
-  const [requests] = useState<Request[]>(requestsList)
-
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest")
-  const [departmentFilter, setDepartmentFilter] = useState("all")
-  const [employeeFilter, setEmployeeFilter] = useState("all")
-  const [searchQuery, setSearchQuery] = useState("")
+  const [requests] = useState<Request[]>(requestsList);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [employeeFilter, setEmployeeFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
-
   const navigate = useNavigate();
 
-  // TODO: fetch from backend with search, order, and pagination
-  // TODO: handle error when fetching
-  // TODO: handle loading state when fetching
-
-  // TODO: fetch report from backend with search, order, and pagination
   // Mock chart data
   const chartData = [
     { date: "2024-03-01", count: 12 },
     { date: "2024-03-02", count: 18 },
     { date: "2024-03-03", count: 9 },
-  ]
+  ];
 
-  // TODO: handle fetching departments and users :)
+  // Use static lists for departments and users
   const departments = departmentsList;
   const users = usersList;
 
   // Filter and sort requests
   const filteredRequests = requests
     .filter(request => {
-      const matchesStatus = statusFilter === "all" || request.status === statusFilter
+      const matchesStatus = statusFilter === "all" || request.status === statusFilter;
       const matchesSearch = [
         request.requestNumber,
         request.studentName,
         request.phone,
-        request.email
-      ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()))
-
-      return matchesStatus && request.department && request.assignedTo && matchesSearch
+        request.email,
+      ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesStatus && request.department && request.assignedTo && matchesSearch;
     })
-    .sort((a, b) => dateOrder === "newest"
-      ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    )
+    .sort((a, b) =>
+      dateOrder === "newest"
+        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
 
   return (
     <div className="p-6 space-y-6">
@@ -85,13 +77,15 @@ export function RequestsPage() {
           {t("chart.requestsPerDay")}
         </h2>
         <div className="h-64">
-          <BarChart width={800} height={250} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="count" fill="#2563eb" />
-          </BarChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="count" fill="#2563eb" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
@@ -109,10 +103,7 @@ export function RequestsPage() {
           </SelectContent>
         </Select>
 
-        <Select
-          value={dateOrder}
-          onValueChange={(value) => setDateOrder(value as "oldest" | "newest")}
-        >
+        <Select value={dateOrder} onValueChange={(value) => setDateOrder(value as "oldest" | "newest")}>
           <SelectTrigger>
             <SelectValue placeholder={t("sort.date")} />
           </SelectTrigger>
@@ -158,7 +149,7 @@ export function RequestsPage() {
       </div>
 
       {/* Table Section */}
-      <div className="border rounded-lg">
+      <div className="overflow-x-auto border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
@@ -188,14 +179,14 @@ export function RequestsPage() {
                     className={`px-2 py-1 rounded-full text-xs ${
                       request.status === "pending"
                         ? "bg-yellow-100 text-yellow-800"
-                        : request.status === "in-progress"
+                        : request.status === "inProgress"
                         ? "bg-blue-100 text-blue-800"
                         : "bg-green-100 text-green-800"
                     }`}
                   >
                     {request.status === "pending"
                       ? t("status.pending")
-                      : request.status === "in-progress"
+                      : request.status === "inProgress"
                       ? t("status.inProgress")
                       : t("status.completed")}
                   </span>
@@ -224,5 +215,7 @@ export function RequestsPage() {
         </Table>
       </div>
     </div>
-  )
+  );
 }
+
+export default RequestsPage;
