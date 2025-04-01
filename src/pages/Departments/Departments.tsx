@@ -25,7 +25,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import { Department } from "@/models/Department.interface"
+import { Department } from "@/core/models/Department.interface"
 import { departmentsList } from "@/api/mock/departments"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert } from "@/components/ui/alert"

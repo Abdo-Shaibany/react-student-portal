@@ -1,4 +1,4 @@
-import { Request } from "@/models/Request.interface";
+import { Request } from "@/core/models/Request.interface";
 
 export const requestsList: Request[] = [
     {

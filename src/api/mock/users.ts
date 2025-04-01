@@ -1,4 +1,4 @@
-import { User } from "@/models/User.interface";
+import { User } from "@/core/models/User.interface";
 
 export const usersList: User[] = [
     {

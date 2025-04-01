@@ -22,3 +22,12 @@ export interface Request {
         comment?: string
     }[]
 }
+
+export interface RequestForm {
+    fullName: string;
+    phone: string;
+    title: string;
+    departmentId: string;
+    message: string;
+    fileUpload: FileList;
+}

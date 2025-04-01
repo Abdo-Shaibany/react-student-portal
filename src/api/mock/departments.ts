@@ -1,4 +1,4 @@
-import { Department } from "@/models/Department.interface";
+import { Department } from "@/core/models/Department.interface";
 
 export const departmentsList: Department[] = [
     { id: "1", name: "Admissions", totalRequests: 24 },

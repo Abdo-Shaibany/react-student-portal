@@ -25,7 +25,7 @@ import {
 import { MoreHorizontal } from "lucide-react"
 import { departmentsList } from "@/api/mock/departments"
 import { usersList } from "@/api/mock/users"
-import { Request } from "@/models/Request.interface"
+import { Request } from "@/core/models/Request.interface"
 import { requestsList } from "@/api/mock/requests"
 import { useNavigate } from "@tanstack/react-router"
 

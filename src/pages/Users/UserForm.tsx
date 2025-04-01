@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Department } from "@/models/Department.interface"
-import { User } from "@/models/User.interface"
+import { Department } from "@/core/models/Department.interface"
+import { User } from "@/core/models/User.interface"
 import { useState } from "react"
 
 // User Form Component

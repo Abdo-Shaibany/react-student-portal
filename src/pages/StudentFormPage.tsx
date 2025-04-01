@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,32 +5,28 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
+import { RequestForm } from "@/core/models/Request.interface";
+import { departmentsList } from "@/api/mock/departments";
 
-interface FormData {
-  fullName: string;
-  phone: string;
-  title: string;
-  department: string;
-  message: string;
-  fileUpload: FileList;
-}
 
 export function StudentFormPage() {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormData>({
+  } = useForm<RequestForm>({
     mode: "onChange",
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: RequestForm) => {
     console.log("Form submitted: ", data);
-    // Process form submission (e.g., send the data to an API)
+    // TODO: show loading
+    // TODO: send the form data to the server
+    // TODO: show dialog to the user with the request number
   };
 
-  // Dummy departments list for the dropdown
-  const departments = ["Engineering", "Science", "Arts", "Business"];
+  // fetch the departments from the server
+  const departments = departmentsList;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -91,24 +86,24 @@ export function StudentFormPage() {
 
           {/* Department Dropdown */}
           <div>
-            <Label htmlFor="department" className="block mb-1">
+            <Label htmlFor="departmentId" className="block mb-1">
               Department
             </Label>
             <select
-              id="department"
+              id="departmentId"
               className="border border-gray-300 rounded p-2 w-full"
-              {...register("department", { required: "Department is required" })}
+              {...register("departmentId", { required: "Department is required" })}
             >
               <option value="">Select department</option>
               {departments.map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
                 </option>
               ))}
             </select>
-            {errors.department && (
+            {errors.departmentId && (
               <span className="text-red-500 text-sm">
-                {errors.department.message}
+                {errors.departmentId.message}
               </span>
             )}
           </div>

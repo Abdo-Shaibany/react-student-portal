@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { usersList } from "@/api/mock/users"
-import { User } from "@/models/User.interface"
+import { User } from "@/core/models/User.interface"
 import { departmentsList } from "@/api/mock/departments"
 import { UserForm } from "./UserForm"
 
