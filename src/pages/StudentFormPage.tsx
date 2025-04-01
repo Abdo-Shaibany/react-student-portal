@@ -7,42 +7,67 @@ import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { RequestForm } from "@/core/models/Request.interface";
 import { departmentsList } from "@/api/mock/departments";
+import { useState } from "react";
+import { submitStudentRequest } from "@/services/studentRequestService";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useTranslation } from "react-i18next";
 
-// TODO: handle language
 export function StudentFormPage() {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm<RequestForm>({
     mode: "onChange",
   });
 
-  const onSubmit = (data: RequestForm) => {
-    console.log("Form submitted: ", data);
-    // TODO: show loading
-    // TODO: send the form data to the server
-    // TODO: show dialog to the user with the request number
-    // TODO: handle errors
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [requestNumber, setRequestNumber] = useState<number | null>(null);
+  const { t } = useTranslation();
+
+  const onSubmit = async (data: RequestForm) => {
+    setErrorMessage("");
+    setLoading(true);
+    try {
+      const response = await submitStudentRequest(data);
+      setLoading(false);
+      setDialogOpen(true);
+      setRequestNumber(response.requestNumber);
+      reset();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setLoading(false);
+      setErrorMessage(error.message || "An error occurred while submitting your request");
+    }
   };
 
-  // fetch the departments from the server
+  // TODO: fetch the departments from the server
   const departments = departmentsList;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="max-w-3xl w-full p-6 shadow-md">
-        <h1 className="text-2xl font-bold mb-6">Student Request Form</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('Student Request Form')}</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Full Name */}
           <div>
             <Label htmlFor="fullName" className="block mb-1">
-              Full Name
+              {t('Full Name')}
             </Label>
             <Input
               id="fullName"
-              placeholder="John Doe"
-              {...register("fullName", { required: "Full Name is required" })}
+              placeholder={t('John Doe')}
+              {...register("fullName", { required: t('Full Name is required') })}
             />
             {errors.fullName && (
               <span className="text-red-500 text-sm">
@@ -54,11 +79,11 @@ export function StudentFormPage() {
           {/* Phone */}
           <div>
             <Label htmlFor="phone" className="block mb-1">
-              Phone
+              {t('Phone')}
             </Label>
             <Input
               id="phone"
-              placeholder="712345678"
+              placeholder={t('712345678')}
               {...register("phone", YemenPhoneValidations)}
             />
             {errors.phone && (
@@ -71,12 +96,12 @@ export function StudentFormPage() {
           {/* Title */}
           <div>
             <Label htmlFor="title" className="block mb-1">
-              Title
+              {t('Title')}
             </Label>
             <Input
               id="title"
-              placeholder="Request Title"
-              {...register("title", { required: "Title is required" })}
+              placeholder={t('Request Title')}
+              {...register("title", { required: t('Title is required') })}
             />
             {errors.title && (
               <span className="text-red-500 text-sm">
@@ -88,14 +113,14 @@ export function StudentFormPage() {
           {/* Department Dropdown */}
           <div>
             <Label htmlFor="departmentId" className="block mb-1">
-              Department
+              {t('Department')}
             </Label>
             <select
               id="departmentId"
               className="border border-gray-300 rounded p-2 w-full"
-              {...register("departmentId", { required: "Department is required" })}
+              {...register("departmentId", { required: t('Department is required') })}
             >
-              <option value="">Select department</option>
+              <option value="">{t('Select department')}</option>
               {departments.map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.name}
@@ -112,13 +137,13 @@ export function StudentFormPage() {
           {/* Message */}
           <div>
             <Label htmlFor="message" className="block mb-1">
-              Message
+              {t('Message')}
             </Label>
             <Textarea
               id="message"
-              placeholder="Type your message here"
+              placeholder={t('Type your message here')}
               rows={4}
-              {...register("message", { required: "Message is required" })}
+              {...register("message", { required: t('Message is required') })}
             />
             {errors.message && (
               <span className="text-red-500 text-sm">
@@ -130,23 +155,21 @@ export function StudentFormPage() {
           {/* File Upload */}
           <div>
             <Label htmlFor="fileUpload" className="block mb-1">
-              Upload Files (PDFs & Images)
+              {t('Upload Files (PDFs & Images)')}
             </Label>
             <Input
               id="fileUpload"
               type="file"
               accept=".pdf,image/*"
               multiple
-              {...register("fileUpload", {
-                required: "Please upload at least one file",
-              })}
             />
-            {errors.fileUpload && (
-              <span className="text-red-500 text-sm">
-                {errors.fileUpload.message}
-              </span>
-            )}
           </div>
+
+          {errorMessage && (
+            <div className="text-red-500 text-sm">
+              {errorMessage}
+            </div>
+          )}
 
           {/* Submit Button */}
           <div className="pt-4">
@@ -156,11 +179,27 @@ export function StudentFormPage() {
               disabled={!isValid}
               className={!isValid ? "opacity-50 cursor-not-allowed" : ""}
             >
-              Submit Request
+              {loading ? t('Submitting...') : t('Submit Request')}
             </Button>
           </div>
         </form>
       </Card>
+
+      {/* Shadcn UI Dialog for Success */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('Request Submitted')}</DialogTitle>
+            <DialogDescription>
+              {t('Your request was submitted successfully! Your request number is:')}
+              <strong>{requestNumber}</strong>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setDialogOpen(false)}>{t('Close')}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -29,5 +29,5 @@ export interface RequestForm {
     title: string;
     departmentId: string;
     message: string;
-    fileUpload: FileList;
+    fileUpload?: FileList;
 }
