@@ -31,7 +31,14 @@ const resources = {
       "Department is required": "Department is required",
       "Full Name is required": "Full Name is required",
       "Title is required": "Title is required",
-      "Message is required": "Message is required"
+      "Message is required": "Message is required",
+      "employeeLogin": "Employee Login",
+      "phone": "Phone",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submitting": "Submitting...",
+      "login": "Login",
+      "passwordRequired": "Password is required"
     }
   },
   ar: {
@@ -63,7 +70,14 @@ const resources = {
       "Department is required": "القسم مطلوب",
       "Full Name is required": "الاسم الكامل مطلوب",
       "Title is required": "العنوان مطلوب",
-      "Message is required": "الرسالة مطلوبة"
+      "Message is required": "الرسالة مطلوبة",
+      "employeeLogin": "تسجيل دخول الموظف",
+      "phone": "الهاتف",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
+      "submitting": "جاري الإرسال...",
+      "login": "تسجيل الدخول",
+      "passwordRequired": "كلمة المرور مطلوبة"
     }
   }
 };
@@ -72,7 +86,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "ar",
+    lng: "en",
     fallbackLng: "en",
     interpolation: {
       escapeValue: false

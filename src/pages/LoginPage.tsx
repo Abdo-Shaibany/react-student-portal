@@ -27,7 +27,6 @@ export function EmployeeLoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log("Login submitted:", data);
     setLoading(true);
         try {
           await submitLoginRequest(data);
@@ -38,22 +37,19 @@ export function EmployeeLoginPage() {
           setLoading(false);
           setErrorMessage(error.message || "An error occurred while submitting your request");
         }
-
-
-    // TODO: show loading
-    // TODO: send the form data to the server
-    // TODO: handle errors
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="max-w-md w-full p-6 shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Employee Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          {t("employeeLogin")}
+        </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Phone */}
           <div>
             <Label htmlFor="phone" className="block mb-1">
-              Phone
+              {t("phone")}
             </Label>
             <Input
               id="phone"
@@ -70,13 +66,13 @@ export function EmployeeLoginPage() {
           {/* Password */}
           <div>
             <Label htmlFor="password" className="block mb-1">
-              Password
+              {t("password")}
             </Label>
             <Input
               id="password"
               type="password"
-              placeholder="Enter your password"
-              {...register("password", { required: "Password is required" })}
+              placeholder={t("passwordPlaceholder")}
+              {...register("password", { required: t("passwordRequired") })}
             />
             {errors.password && (
               <span className="text-red-500 text-sm">
@@ -85,6 +81,12 @@ export function EmployeeLoginPage() {
             )}
           </div>
 
+          {errorMessage && (
+            <div className="text-red-500 text-sm">
+              {errorMessage}
+            </div>
+          )}
+          
           {/* Submit Button */}
           <div className="pt-4">
             <Button
@@ -93,7 +95,7 @@ export function EmployeeLoginPage() {
               disabled={!isValid}
               className={!isValid ? "opacity-50 cursor-not-allowed" : ""}
             >
-              Login
+              {loading ? t("submitting") : t("login")}
             </Button>
           </div>
         </form>
