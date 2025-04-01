@@ -11,7 +11,7 @@ export function submitStudentRequest(formData: RequestForm): Promise<{ requestNu
             resolve({ requestNumber });
 
             // Uncomment below to simulate an error:
-            // reject(new Error("Failed to submit request"));
+            reject(new Error("Failed to submit request"));
         }, 2000);
     });
 }

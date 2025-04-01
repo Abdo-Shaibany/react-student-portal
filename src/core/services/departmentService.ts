@@ -53,6 +53,8 @@ export function createDepartment(department: Department): Promise<Department> {
 
         setTimeout(() => {
             resolve(newDepartment);
+
+            reject("hello");
         }, 200);
     });
 }
