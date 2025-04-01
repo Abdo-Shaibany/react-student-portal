@@ -4,40 +4,11 @@ import { Label } from "@/components/ui/label"
 import { Department } from "@/core/models/Department.interface"
 import { useState } from "react"
 
-// export function DepartmentForm({
-//     department,
-//     onSubmit,
-// }: {
-//     department?: Department | null
-//     onSubmit: (values: { name: string }) => void
-// }) {
-//     const [name, setName] = useState(department?.name || "")
-
-//     return (
-//         <form
-//             className="space-y-4"
-//             onSubmit={(e) => {
-//                 e.preventDefault()
-//                 onSubmit({ name })
-//             }}
-//         >
-//             <div className="space-y-2">
-//                 <Label htmlFor="name">Department Name</Label>
-//                 <Input
-//                     id="name"
-//                     value={name}
-//                     onChange={(e) => setName(e.target.value)}
-//                     required
-//                 />
-//             </div>
-//             <Button type="submit" className="w-full">
-//                 {department ? "Save Changes" : "Create Department"}
-//             </Button>
-//         </form>
-//     )
-// }
-
 // Department Form Component
+// TODO: handle language
+// TODO: handle form vlaidation with useForm
+// TODO: add nameAr field too :)
+// TODO: handle modeling the form data
 export function DepartmentForm({
     department,
     onSubmit,

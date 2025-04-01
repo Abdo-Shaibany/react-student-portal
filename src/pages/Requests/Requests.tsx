@@ -27,10 +27,11 @@ import { departmentsList } from "@/api/mock/departments"
 import { usersList } from "@/api/mock/users"
 import { Request } from "@/core/models/Request.interface"
 import { requestsList } from "@/api/mock/requests"
-import { useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
 
+// TODO: handle language
 export function RequestsPage() {
-  const [requests, setRequests] = useState<Request[]>(requestsList)
+  const [requests] = useState<Request[]>(requestsList)
 
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest")
@@ -38,8 +39,13 @@ export function RequestsPage() {
   const [employeeFilter, setEmployeeFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  // TODO: fetch from backend with search, order, and pagination
+  // TODO: handle error when fetching
+  // TODO: handle loading state when fetching
+
+  // TODO: fetch report from backend with search, order, and pagination
   // Mock chart data
   const chartData = [
     { date: "2024-03-01", count: 12 },
@@ -47,6 +53,7 @@ export function RequestsPage() {
     { date: "2024-03-03", count: 9 },
   ]
 
+  // TODO: handle fetching departments and users :)
   const departments = departmentsList;
   const users = usersList;
 
@@ -169,8 +176,8 @@ export function RequestsPage() {
                 <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs ${request.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-                      request.status === "in-progress" ? "bg-blue-100 text-blue-800" :
-                        "bg-green-100 text-green-800"
+                    request.status === "in-progress" ? "bg-blue-100 text-blue-800" :
+                      "bg-green-100 text-green-800"
                     }`}>
                     {request.status}
                   </span>
@@ -182,27 +189,7 @@ export function RequestsPage() {
 
 
                 <TableCell>
-                  <Select
-                    value={request.assignedTo.id}
-                    onValueChange={value => setRequests(prev =>
-                      prev.map(req =>
-                        req.id === request.id
-                          ? { ...req, assignedTo: users.find(emp => emp.id === value) || req.assignedTo }
-                          : req
-                      )
-                    )}
-                  >
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder="Unassigned" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {users.map(emp => (
-                        <SelectItem key={emp.id} value={emp.id}>
-                          {emp.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {request.assignedTo.name}
                 </TableCell>
 
                 <TableCell>
@@ -211,7 +198,7 @@ export function RequestsPage() {
                       <MoreHorizontal className="h-4 w-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => navigate({ to: `/admin-portal/requests/${request.id}` })}>
+                      <DropdownMenuItem onClick={() => navigate(`/admin-portal/requests/${request.id}`)}>
                         View Details
                       </DropdownMenuItem>
                     </DropdownMenuContent>

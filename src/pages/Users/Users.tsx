@@ -28,9 +28,7 @@ import { User } from "@/core/models/User.interface"
 import { departmentsList } from "@/api/mock/departments"
 import { UserForm } from "./UserForm"
 
-
-
-
+// TODO: handle language
 export function UsersPage() {
   const [users, setUsers] = useState<User[]>(usersList)
   const [searchQuery, setSearchQuery] = useState("")
@@ -39,11 +37,19 @@ export function UsersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
 
+  // TODO: fetch users from backend with search, order, and pagination
+  // TODO: handle error when fetching users
+  // TODO: handle loading state when fetching users
+
   // Filter and sort users
   const filteredUsers = users
     .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => sortOrder === "asc" ? a.totalRequests - b.totalRequests : b.totalRequests - a.totalRequests)
 
+  // TODO: handle create and update
+  // TODO: handle loading state when submitting form
+  // TODO: handle error when submitting form
+  // TODO: fetch data again after deleting
   const handleSubmit = (values: User) => {
     if (isEditMode && selectedUser) {
       setUsers(prev => prev.map(user => user.id === selectedUser.id ? values : user))
@@ -53,6 +59,10 @@ export function UsersPage() {
     setIsDialogOpen(false)
   }
 
+  // TODO: handle delete from backend
+  // TODO: handle error when deleting
+  // TODO: handle loading state when deleting
+  // TODO: fetch data again after deleting
   const handleDelete = (id: string) => {
     setUsers(prev => prev.filter(user => user.id !== id))
   }

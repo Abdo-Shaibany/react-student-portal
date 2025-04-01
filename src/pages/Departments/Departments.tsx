@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Alert } from "@/components/ui/alert"
 import { DepartmentForm } from "./DepartmentForm"
 
+// TODO: handle language
 export function DepartmentsPage() {
     const [departments, setDepartments] = useState<Department[]>([])
     const [searchQuery, setSearchQuery] = useState("")
@@ -43,9 +44,13 @@ export function DepartmentsPage() {
     const [error, setError] = useState("")
     const pageSize = 10
 
+    // TODO: fetch departments from backend with search, order, and pagination
+    // TODO: handle error when fetching departments
+    // TODO: handle loading state when fetching departments
     useEffect(() => {
         const timer = setTimeout(() => {
             if (Math.random() < 0.3) {
+                // TODO: add toast here to show error message instead
                 setError("Failed to load departments. Please try refreshing the page.")
             } else {
                 setDepartments(departmentsList)
@@ -62,6 +67,10 @@ export function DepartmentsPage() {
 
     const paginatedData = filteredDepartments.slice((page - 1) * pageSize, page * pageSize)
 
+    // TODO: handle delete department from backend
+    // TODO: handle error when deleting department
+    // TODO: handle loading state when deleting department
+    // TODO: fetch data again after deleting department
     const handleDelete = (id: string) => {
         const deletedDept = departments.find(d => d.id === id)
         setDepartments(prev => prev.filter(dept => dept.id !== id))
@@ -79,6 +88,10 @@ export function DepartmentsPage() {
     }
 
     const handleSubmit = (values: { name: string }) => {
+        // TODO: handle create and update department
+        // TODO: handle loading state when submitting form
+        // TODO: handle error when submitting form
+        // TODO: fetch data again after deleting department
         if (isEditMode && selectedDepartment) {
             // Update existing department
             setDepartments(prev =>

@@ -6,7 +6,10 @@ import { Department } from "@/core/models/Department.interface"
 import { User } from "@/core/models/User.interface"
 import { useState } from "react"
 
-// User Form Component
+// TODO: handle language
+// TODO: handle form vlaidation with useForm
+// TODO: change email to phone field and add yemen phone number validation :)
+// TODO: handle modeling the form data
 export function UserForm({
     user,
     departments,
@@ -27,7 +30,7 @@ export function UserForm({
         id: user?.id || "",
         name,
         email,
-        password: password || "default-password", // In real app, handle properly
+        password: password,
         departmentId: department?.id ?? "0",
         totalRequests: user?.totalRequests || 0
       })

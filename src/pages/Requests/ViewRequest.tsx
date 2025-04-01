@@ -17,25 +17,34 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Download, FileText, ImageIcon } from "lucide-react"
-import { requestsList } from "@/api/mock/requests"
+import { requestsList } from "@/api/mock/requests";
 
+// TODO: handle language
 export function RequestViewPage() {
     const url = window.location.href;
     const id = url.split('/').pop();
-    const request = requestsList.find(request => request.id === id)!;
 
+    // TODO: handle fetching request from backend
+    // TODO: handle error when fetching
+    // TODO: handle loading state when fetching
+
+    const request = requestsList.find(request => request.id === id)!;
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [newStatus, setNewStatus] = useState('')
     const [comment, setComment] = useState('')
     const [localRequest, setLocalRequest] = useState(request)
 
+    // TODO: move this to enum folder and add on-hold
     const statusColors = {
         pending: 'bg-yellow-100 text-yellow-800',
         'in-progress': 'bg-blue-100 text-blue-800',
         completed: 'bg-green-100 text-green-800'
     }
 
+    // TODO: handle adding this to backend
+    // TODO: handle error when fetching
+    // TODO: handle loading state when fetching
     const handleStatusChange = () => {
         const newHistory = [...localRequest.statusHistory, {
             status: newStatus as typeof request.statusHistory[0]['status'],
