@@ -6,11 +6,18 @@ import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { useNavigate } from "react-router-dom";
 import { LoginFormData } from "@/core/models/LoginForm.interface";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { submitLoginRequest } from "@/services/loginService";
 
 // TODO: handle language
 export function EmployeeLoginPage() {
   const navigate = useNavigate();
-  
+
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
@@ -19,9 +26,20 @@ export function EmployeeLoginPage() {
     mode: "onChange",
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     console.log("Login submitted:", data);
-    navigate("/admin-portal/dashboard");
+    setLoading(true);
+        try {
+          await submitLoginRequest(data);
+          setLoading(false);
+          navigate("/admin-portal/dashboard");
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          setLoading(false);
+          setErrorMessage(error.message || "An error occurred while submitting your request");
+        }
+
+
     // TODO: show loading
     // TODO: send the form data to the server
     // TODO: handle errors

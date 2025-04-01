@@ -7,7 +7,7 @@ import { DepartmentsPage } from '@/pages/Departments/Departments';
 import { UsersPage } from '@/pages/Users/Users';
 import { RequestsPage } from '@/pages/Requests/Requests';
 import { RequestViewPage } from '@/pages/Requests/ViewRequest';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 const AppRoutes = () => (
   <BrowserRouter>
@@ -16,6 +16,7 @@ const AppRoutes = () => (
       <Route path="/student-form" element={<StudentFormPage />} />
       <Route path="/employee-login" element={<EmployeeLoginPage />} />
       <Route path="/admin-portal" element={<EmployeeLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="departments" element={<DepartmentsPage />} />
         <Route path="users" element={<UsersPage />} />
