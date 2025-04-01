@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Department, DepartmentForm as FormData } from "@/core/models/Department.interface"
+import { Department,  DepartmentForm as FormData } from "@/core/models/Department.interface"
 import { useTranslation } from "react-i18next";
 import { useForm, } from "react-hook-form";
 
-// Department Form Component
-// TODO: handle form vlaidation with useForm
-// TODO: handle modeling the form data
 export function DepartmentForm({
   department,
   onSubmit,
 }: {
   department?: Department | null
-  onSubmit: (values: { name: string, id?: string }) => void
+  onSubmit: (values: FormData) => void
 }) {
 
   const {
@@ -39,7 +36,7 @@ export function DepartmentForm({
         {errors.name && <p className="text-red-600 text-sm">{t("validation.nameRequired")}</p>}
       </div>
       <Button type="submit" disabled={!isValid}
-        className={!isValid ? "opacity-50 cursor-not-allowed" : "w-full"}>
+        className={!isValid ? "opacity-50 cursor-not-allowed w-full" : "w-full"}>
         {department ? t("form.saveChanges") : t("form.createDepartment")}
       </Button>
     </form>
