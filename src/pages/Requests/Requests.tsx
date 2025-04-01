@@ -59,7 +59,6 @@ export function RequestsPage() {
         request.requestNumber,
         request.studentName,
         request.phone,
-        request.email,
       ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesStatus && request.department && request.assignedTo && matchesSearch;
     })

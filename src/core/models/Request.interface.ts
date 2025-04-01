@@ -7,7 +7,6 @@ export interface Request {
     studentName: string
     title: string
     phone: string
-    email: string
     message: string
     createdAt: string
     status: RequestStatus
