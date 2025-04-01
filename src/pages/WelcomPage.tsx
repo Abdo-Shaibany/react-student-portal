@@ -1,6 +1,6 @@
-import { useNavigate } from "@tanstack/react-router"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 export function WelcomePage() {
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ export function WelcomePage() {
               </p>
               <Button 
                 size="lg"
-                onClick={() => navigate({ to: '/student-form' })}
+                onClick={() => navigate('/student-form')}
                 >
                 Continue as Student
               </Button>
@@ -37,7 +37,7 @@ export function WelcomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => navigate({ to: '/employee-login' })}
+                onClick={() => navigate('/employee-login')}
               >
                 Employee Login
               </Button>
