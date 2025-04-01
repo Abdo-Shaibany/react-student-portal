@@ -10,7 +10,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { submitLoginRequest } from "@/services/loginService";
 
-// TODO: handle language
 export function EmployeeLoginPage() {
   const navigate = useNavigate();
 

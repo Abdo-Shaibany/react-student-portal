@@ -38,7 +38,22 @@ const resources = {
       "passwordPlaceholder": "Enter your password",
       "submitting": "Submitting...",
       "login": "Login",
-      "passwordRequired": "Password is required"
+      "passwordRequired": "Password is required",
+      "departmentRequestsOverview": "Department Requests Overview",
+      "completed": "Completed",
+      "pending": "Pending",
+      "late": "Late",
+      "lateRequests": "Late Requests",
+      "filterByDepartment": "Filter by department",
+      "allDepartments": "All Departments",
+      "requestId": "Request ID",
+      "title": "Title",
+      "department": "Department",
+      "created": "Created",
+      "daysLate": "Days Late",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "noLateRequestsFound": "No late requests found"
     }
   },
   ar: {
@@ -77,7 +92,22 @@ const resources = {
       "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
       "submitting": "جاري الإرسال...",
       "login": "تسجيل الدخول",
-      "passwordRequired": "كلمة المرور مطلوبة"
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "departmentRequestsOverview": "نظرة عامة على طلبات الأقسام",
+      "completed": "مكتمل",
+      "pending": "معلق",
+      "late": "متأخر",
+      "lateRequests": "الطلبات المتأخرة",
+      "filterByDepartment": "تصفية حسب القسم",
+      "allDepartments": "جميع الأقسام",
+      "requestId": "رقم الطلب",
+      "title": "العنوان",
+      "department": "القسم",
+      "created": "تاريخ الإنشاء",
+      "daysLate": "أيام التأخير",
+      "actions": "الإجراءات",
+      "viewDetails": "عرض التفاصيل",
+      "noLateRequestsFound": "لم يتم العثور على طلبات متأخرة"
     }
   }
 };
@@ -98,6 +128,7 @@ i18n
   });
 
 const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
+i18n.changeLanguage(currentLanguage);
 document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
 
 export default i18n;

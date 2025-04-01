@@ -10,14 +10,14 @@ export interface Request {
     email: string
     message: string
     createdAt: string
-    status: "pending" | "in-progress" | "completed"
+    status: RequestStatus
     departmentId: string
     assignedToId: string
     department: Department
     assignedTo: User
     files: { name: string; type: 'pdf' | 'image', url: string }[]
     statusHistory: {
-        status: "pending" | "in-progress" | "completed"
+        status: RequestStatus
         date: string
         comment?: string
     }[]
@@ -30,4 +30,10 @@ export interface RequestForm {
     departmentId: string;
     message: string;
     fileUpload?: FileList;
+}
+
+export enum RequestStatus {
+    PENDING = "pending",
+    IN_PROGRESS = "in-progress",
+    COMPLETED = "completed",
 }

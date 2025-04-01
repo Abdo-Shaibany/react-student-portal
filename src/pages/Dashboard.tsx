@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   BarChart,
   Bar,
@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { requestsList } from "@/api/mock/requests"
 import { departmentsList } from "@/api/mock/departments"
 import { useNavigate } from "react-router-dom"
 import {
@@ -34,92 +33,94 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
+import { fetchRequests } from "@/services/requestService"
+import { Request, RequestStatus } from "@/core/models/Request.interface"
+import { fetchDepartmentsReport } from "@/services/departmentService"
+import { DepartmentReport } from "@/core/models/Department.interface"
+import { useTranslation } from "react-i18next"
 
 
 // TODO: handle language
 export function DashboardPage() {
   const [selectedDepartment, setSelectedDepartment] = useState("all")
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  // TODO: fetch request with pending status and with selected department
-  const filteredRequests = requestsList.filter(request => {
-    const filtered = selectedDepartment === "all" ? true : (request.department.id === selectedDepartment);
-    return request.status === "pending" && filtered;
-  })
 
-  // TODO: fetch department report from backend
-  const departmentsReport: {
-    name: string
-    completed: number
-    pending: number
-    late: number
-  }[] = departmentsList.map(department => {
-    const completed = requestsList.filter(request => request.department.id === department.id && request.status === "completed").length
-    const today = new Date().toISOString().split('T')[0]
-    const pending = requestsList.filter(request => request.department.id === department.id && request.status === "pending" && request.createdAt.split('T')[0] === today).length
-    const late = requestsList.filter(request => request.department.id === department.id && request.status === "pending" && request.createdAt.split('T')[0] < today).length
-    return {
-      name: department.name,
-      completed,
-      pending,
-      late,
-    }
-  })
+  const [requests, setRequests] = useState<Request[]>([])
+  const [departmentsReport, setDepartmentReport] = useState<DepartmentReport[]>([])
+
+
+  useEffect(() => {
+    const fetchAndSetDepartmentsReport = async () => {
+      const values = await fetchDepartmentsReport();
+      setDepartmentReport(values.data);
+    };
+    fetchAndSetDepartmentsReport();
+  }, [])
+  
+
+  useEffect(() => {
+    const fetchAndSetRequests = async () => {
+      const values = await fetchRequests(selectedDepartment, RequestStatus.PENDING);
+      setRequests(values.data);
+    };
+    fetchAndSetRequests();
+  }, [selectedDepartment])
 
   return (
     <div className="space-y-8 m-4">
-        <div className="bg-background p-6 rounded-lg shadow-sm border">
-          <h2 className="text-xl font-semibold mb-4">Department Requests Overview</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={departmentsReport}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="completed" stackId="a" fill="#16a34a" name="Completed" />
-                <Bar dataKey="pending" stackId="a" fill="#eab308" name="Pending" />
-                <Bar dataKey="late" stackId="a" fill="#dc2626" name="Late" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      <div className="bg-background p-6 rounded-lg shadow-sm border">
+        <h2 className="text-xl font-semibold mb-4">
+          {t("departmentRequestsOverview")}
+        </h2>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={departmentsReport}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="completed" stackId="a" fill="#16a34a" name={t("completed")} />
+              <Bar dataKey="pending" stackId="a" fill="#eab308" name={t("pending")} />
+              <Bar dataKey="late" stackId="a" fill="#dc2626" name={t("late")} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-      
+      </div>
+
       <div className="bg-background p-6 rounded-lg shadow-sm border">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Late Requests</h2>
-   
-            <Select
-              value={selectedDepartment}
-              onValueChange={setSelectedDepartment}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filter by department" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Departments</SelectItem>
-                {departmentsList.map(department => (
-                  <SelectItem key={department.id} value={department.id}>{department.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
+          <h2 className="text-xl font-semibold">{t("lateRequests")}</h2>
+          <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder={t("filterByDepartment")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("allDepartments")}</SelectItem>
+              {departmentsList.map((department) => (
+                <SelectItem key={department.id} value={department.id}>
+                  {department.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Request ID</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Days Late</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t("requestId")}</TableHead>
+              <TableHead>{t("title")}</TableHead>
+              <TableHead>{t("department")}</TableHead>
+              <TableHead>{t("created")}</TableHead>
+              <TableHead>{t("daysLate")}</TableHead>
+              <TableHead>{t("actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredRequests.map((request) => (
+            {requests.map((request) => (
               <TableRow key={request.id}>
                 <TableCell className="font-medium">{request.id}</TableCell>
                 <TableCell>{request.title}</TableCell>
@@ -128,9 +129,11 @@ export function DashboardPage() {
                   {new Date(request.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {Math.floor((new Date().getTime() - new Date(request.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
+                  {Math.floor(
+                    (new Date().getTime() - new Date(request.createdAt).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  )}
                 </TableCell>
-                
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>
@@ -138,7 +141,7 @@ export function DashboardPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem onClick={() => navigate(`/admin-portal/requests/${request.id}`)}>
-                        View Details
+                        {t("viewDetails")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -148,9 +151,9 @@ export function DashboardPage() {
           </TableBody>
         </Table>
 
-        {filteredRequests.length === 0 && (
+        {requests.length === 0 && (
           <div className="py-8 text-center text-muted-foreground">
-            No late requests found
+            {t("noLateRequestsFound")}
           </div>
         )}
       </div>

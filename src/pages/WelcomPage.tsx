@@ -7,6 +7,7 @@ export function WelcomePage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
+
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ar" : "en";
     i18n.changeLanguage(newLang);
