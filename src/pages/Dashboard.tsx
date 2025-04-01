@@ -155,7 +155,7 @@ export function DashboardPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {requests.map((request) => (
+            {requests.filter(request => getDaysDifference(request.createdAtDate) > 2).map((request) => (
               <TableRow key={request.requestNumber}>
                 <TableCell className="font-medium">{request.requestNumber}</TableCell>
                 <TableCell>{request.title}</TableCell>

@@ -41,8 +41,19 @@ export function StudentFormPage() {
     setErrorMessage("");
     setLoading(true);
     try {
-      console.log(data, " data");
-      const response = await submitStudentRequest(data);
+      const formData = new FormData();
+      formData.append('fullName', data.fullName);
+      formData.append('phone', data.phone);
+      formData.append('title', data.title);
+      formData.append('departmentId', data.departmentId);
+      formData.append('message', data.message);
+
+      if (data.fileUpload && data.fileUpload.length > 0) {
+        Array.from(data.fileUpload).forEach((file) => {
+          formData.append("fileUpload", file);
+        });
+      }
+      const response = await submitStudentRequest(formData);
       setLoading(false);
       setDialogOpen(true);
       setRequestNumber(response.requestNumber);
@@ -170,7 +181,7 @@ export function StudentFormPage() {
               type="file"
               accept=".pdf,image/*"
               multiple
-              // {...register("fileUpload")}
+              {...register("fileUpload")}
             />
           </div>
 

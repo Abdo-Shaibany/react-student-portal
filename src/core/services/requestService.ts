@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, RequestDailyCount, RequestForm, RequestTodayReport } from "@/core/models/Request.interface";
+import { Request, RequestDailyCount, RequestTodayReport } from "@/core/models/Request.interface";
 import { RequestStatus } from "@/core/enum/requestStatus";
 
 const BASE_URL = "http://localhost:3000/api";
@@ -7,7 +7,7 @@ const BASE_URL = "http://localhost:3000/api";
 function getAuthHeaders() {
     const token = localStorage.getItem("token") || "";
     return {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
     };
 }
@@ -58,7 +58,7 @@ export async function fetchRequestCountsDaily(): Promise<RequestDailyCount[]> {
     return await response.json();
 }
 
-export async function fetchRequestById(id: string): Promise<{ data: Request | undefined }> {
+export async function fetchRequestById(id: string): Promise<Request | undefined> {
     const response = await fetch(`${BASE_URL}/requests/${id}`, {
         method: "GET",
         headers: getAuthHeaders(),
@@ -73,7 +73,7 @@ export async function updateRequestStatus(
     id: string,
     status: RequestStatus,
     comment: string
-): Promise<{ data: Request | undefined }> {
+): Promise<Request> {
     const response = await fetch(`${BASE_URL}/requests/${id}/status`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -85,11 +85,11 @@ export async function updateRequestStatus(
     return await response.json();
 }
 
-export async function submitStudentRequest(formData: RequestForm): Promise<{ requestNumber: number }> {
+export async function submitStudentRequest(formData: FormData): Promise<{ requestNumber: number }> {
     const response = await fetch(`${BASE_URL}/requests`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(formData),
+        body: formData,
     });
 
     if (!response.ok) {

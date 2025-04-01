@@ -27,8 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useNavigate } from "react-router-dom"
 
 export function RequestViewPage() {
-  const url = window.location.href;
-  const id = url.split('/').pop();
+
 
   const { t } = useTranslation();
 
@@ -36,17 +35,20 @@ export function RequestViewPage() {
 
   const [request, setRequest] = useState<Request | undefined>();
 
-
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [updateStatus, setUpdateStatus] = useState(0);
 
   useEffect(() => {
+    const url = window.location.href;
+    const id = url.split('/').pop();
+
     const fetchRequest = async () => {
       try {
         setLoading(true);
         const response = await fetchRequestById(id!);
-        setRequest(response.data);
+        setRequest(response);
 
-        if (!response.data) {
+        if (!response) {
           toast.error(t("error.noRequestFound"));
           naviagte('/admin-portal/requests');
         }
@@ -59,7 +61,7 @@ export function RequestViewPage() {
     }
 
     fetchRequest()
-  }, [id, t, naviagte])
+  }, [t, naviagte, updateStatus]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newStatus, setNewStatus] = useState('')
@@ -69,10 +71,8 @@ export function RequestViewPage() {
     setLoading(true)
 
     try {
-      const updatedRequest = await updateRequestStatus(request!.id, newStatus as RequestStatus, comment)
-      if (updatedRequest)
-        setRequest(updatedRequest.data);
-
+      await updateRequestStatus(request!.id, newStatus as RequestStatus, comment)
+      setUpdateStatus(updateStatus + 1);
       setIsDialogOpen(false)
       setNewStatus('')
       setComment('')
