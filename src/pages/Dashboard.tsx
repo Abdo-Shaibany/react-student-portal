@@ -130,7 +130,7 @@ export function DashboardPage() {
             <SelectContent>
               <SelectItem value="all">{t("allDepartments")}</SelectItem>
               {departmentsList.map((department) => (
-                <SelectItem key={department.id} value={department.id}>
+                <SelectItem key={department.id} value={department.id!}>
                   {department.name}
                 </SelectItem>
               ))}

@@ -189,6 +189,7 @@ export function RequestViewPage() {
                     key={index}
                     href={file.url}
                     download
+                    target="_blank"
                     className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50"
                   >
                     {file.type === "pdf" ? (
