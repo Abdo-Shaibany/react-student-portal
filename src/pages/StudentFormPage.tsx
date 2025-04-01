@@ -6,8 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { RequestForm } from "@/core/models/Request.interface";
-import { departmentsList } from "@/api/mock/departments";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { submitStudentRequest } from "@/services/studentRequestService";
 import {
   Dialog,
@@ -18,6 +17,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
+import { fetchDepartments } from "@/services/departmentService";
+import { Department } from "@/core/models/Department.interface";
 
 export function StudentFormPage() {
   const {
@@ -32,6 +33,7 @@ export function StudentFormPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [requestNumber, setRequestNumber] = useState<number | null>(null);
   const { t } = useTranslation();
 
@@ -51,8 +53,13 @@ export function StudentFormPage() {
     }
   };
 
-  // TODO: fetch the departments from the server
-  const departments = departmentsList;
+  useEffect(() => {
+    const fetchAndSetDepartments = async () => {
+      const values = await fetchDepartments();
+      setDepartments(values);
+    };
+    fetchAndSetDepartments();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
