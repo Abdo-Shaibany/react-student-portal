@@ -4,16 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
+import { LoginFormData } from "@/core/models/LoginForm.interface";
 
-interface LoginFormData {
-  phone: string;
-  password: string;
-}
-
+// TODO: handle language
 export function EmployeeLoginPage() {
   const navigate = useNavigate();
-
   
   const {
     register,
@@ -25,7 +21,10 @@ export function EmployeeLoginPage() {
 
   const onSubmit = (data: LoginFormData) => {
     console.log("Login submitted:", data);
-    navigate({ to: "/admin-portal/dashboard" });
+    navigate("/admin-portal/dashboard");
+    // TODO: show loading
+    // TODO: send the form data to the server
+    // TODO: handle errors
   };
 
   return (

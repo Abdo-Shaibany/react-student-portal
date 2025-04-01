@@ -8,7 +8,7 @@ import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { RequestForm } from "@/core/models/Request.interface";
 import { departmentsList } from "@/api/mock/departments";
 
-
+// TODO: handle language
 export function StudentFormPage() {
   const {
     register,
@@ -23,6 +23,7 @@ export function StudentFormPage() {
     // TODO: show loading
     // TODO: send the form data to the server
     // TODO: show dialog to the user with the request number
+    // TODO: handle errors
   };
 
   // fetch the departments from the server

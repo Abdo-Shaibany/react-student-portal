@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 
+// TODO: handle language
 export function WelcomePage() {
   const navigate = useNavigate()
 

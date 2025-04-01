@@ -13,12 +13,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Outlet, useRouter } from "@tanstack/react-router"
 import { getBreadcrumbItems } from "@/lib/breadcrumb"
+import { Outlet } from "react-router-dom"
 
+// TODO: handle language
 export default function EmployeeLayout() {
-  const router = useRouter()
-  const currentPath = router.state.location.pathname
+  const currentPath = window.location.pathname
   const breadcrumbItems = getBreadcrumbItems(currentPath)
 
   return (

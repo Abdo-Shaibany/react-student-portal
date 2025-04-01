@@ -31,7 +31,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 export function RequestsPage() {
   const [requests, setRequests] = useState<Request[]>(requestsList)
-  
+
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest")
   const [departmentFilter, setDepartmentFilter] = useState("all")
@@ -60,10 +60,10 @@ export function RequestsPage() {
         request.phone,
         request.email
       ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()))
-      
+
       return matchesStatus && request.department && request.assignedTo && matchesSearch
     })
-    .sort((a, b) => dateOrder === "newest" 
+    .sort((a, b) => dateOrder === "newest"
       ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
@@ -109,32 +109,32 @@ export function RequestsPage() {
         </Select>
 
 
-          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Departments</SelectItem>
-              {departments.map(dept => (
-                <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        
+        <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by department" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Departments</SelectItem>
+            {departments.map(dept => (
+              <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
 
-          <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by employee" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Employees</SelectItem>
-              {users.map(emp => (
-                <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        
+
+        <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Filter by employee" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Employees</SelectItem>
+            {users.map(emp => (
+              <SelectItem key={emp.id} value={emp.id}>{emp.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
 
         <Input
           placeholder="Search requests..."
@@ -154,8 +154,8 @@ export function RequestsPage() {
               <TableHead>Phone</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead>Status</TableHead>
-           <TableHead>Department</TableHead>
-            <TableHead>Assigned To</TableHead>
+              <TableHead>Department</TableHead>
+              <TableHead>Assigned To</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -168,44 +168,43 @@ export function RequestsPage() {
                 <TableCell>{request.phone}</TableCell>
                 <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    request.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-                    request.status === "in-progress" ? "bg-blue-100 text-blue-800" :
-                    "bg-green-100 text-green-800"
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs ${request.status === "pending" ? "bg-yellow-100 text-yellow-800" :
+                      request.status === "in-progress" ? "bg-blue-100 text-blue-800" :
+                        "bg-green-100 text-green-800"
+                    }`}>
                     {request.status}
                   </span>
                 </TableCell>
-        
-                  <TableCell>
-                    {request.department.name}
-                  </TableCell>
-                
-    
-                  <TableCell>
-                    <Select 
-                      value={request.assignedTo.id} 
-                      onValueChange={value => setRequests(prev => 
-                        prev.map(req => 
-                          req.id === request.id 
-                            ? {...req, assignedTo: users.find(emp => emp.id === value) || req.assignedTo} 
-                            : req
-                        )
-                      )}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Unassigned" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {users.map(emp => (
-                          <SelectItem key={emp.id} value={emp.id}>
-                            {emp.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                
+
+                <TableCell>
+                  {request.department.name}
+                </TableCell>
+
+
+                <TableCell>
+                  <Select
+                    value={request.assignedTo.id}
+                    onValueChange={value => setRequests(prev =>
+                      prev.map(req =>
+                        req.id === request.id
+                          ? { ...req, assignedTo: users.find(emp => emp.id === value) || req.assignedTo }
+                          : req
+                      )
+                    )}
+                  >
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Unassigned" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.map(emp => (
+                        <SelectItem key={emp.id} value={emp.id}>
+                          {emp.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>

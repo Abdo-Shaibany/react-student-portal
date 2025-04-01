@@ -24,7 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "react-router-dom"
 
 export function NavUser({
   user,
@@ -77,7 +77,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate({ to: '/' })} >
+            <DropdownMenuItem onClick={() => navigate('/')} >
               <LogOut />
               Log out
             </DropdownMenuItem>

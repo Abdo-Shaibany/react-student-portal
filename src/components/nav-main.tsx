@@ -15,8 +15,8 @@ import {
   
 } from "@/components/ui/sidebar"
 import { badgeVariants } from "./ui/badge"
-import { useNavigate, useRouter } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
+import { useNavigate } from "react-router-dom"
 
 export function NavMain({
   items,
@@ -31,8 +31,7 @@ export function NavMain({
     }
   }[]
 }) {
-  const router = useRouter()
-  const currentPath = router.state.location.pathname
+  const currentPath = window.location.pathname
 
   const navigate = useNavigate();
 
@@ -54,7 +53,7 @@ export function NavMain({
                   <SidebarMenuButton tooltip={item.title} className={cn(
                         "transition-colors cursor-pointer",
                         isActive && "bg-slate-100 text-primary hover:bg-slate-100"
-                      )} onClick={() => navigate({ to: item.url })} >
+                      )} onClick={() => navigate(item.url)} >
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-2">
                         {item.icon && <item.icon className="h-4 w-4" />}
