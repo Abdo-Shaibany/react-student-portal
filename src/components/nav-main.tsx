@@ -1,7 +1,5 @@
 "use client"
 
-import { type LucideIcon } from "lucide-react"
-
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -16,19 +14,12 @@ import {
 import { badgeVariants } from "./ui/badge"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
+import { SideBarItem } from "@/core/models/sidebar"
 
 export function NavMain({
   items,
 }: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    badge?: {
-      new: number
-      late: number
-    }
-  }[]
+  items: SideBarItem[]
 }) {
   const currentPath = window.location.pathname
 

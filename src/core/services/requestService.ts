@@ -1,7 +1,7 @@
 // src/services/studentRequestService.ts
 
 import { requestsList } from "@/api/mock/requests";
-import { Request, RequestDailyCount } from "@/core/models/Request.interface";
+import { Request, RequestDailyCount, RequestForm, RequestTodayReport } from "@/core/models/Request.interface";
 import { RequestStatus } from "../enum/requestStatus";
 
 export function fetchRequests(selectedDepartment: string, status: RequestStatus, searchQuery?: string, dateOrder?: string): Promise<{ data: Request[] }> {
@@ -92,6 +92,37 @@ export function updateRequestStatus(id: string, status: RequestStatus, comment: 
 
             // Uncomment below to simulate an error:
             reject(new Error("Failed to update request status"));
+        }, 2000);
+    });
+}
+
+export function submitStudentRequest(formData: RequestForm): Promise<{ requestNumber: number }> {
+    return new Promise((resolve, reject) => {
+        // Simulate a network delay of 2 seconds
+        console.log(formData)
+        setTimeout(() => {
+            // Simulate success by generating a random request number
+            const requestNumber = Math.floor(100000 + Math.random() * 900000);
+            resolve({ requestNumber });
+
+            // Uncomment below to simulate an error:
+            reject(new Error("Failed to submit request"));
+        }, 2000);
+    });
+}
+
+export function getRequestTodayReport(): Promise<{ data: RequestTodayReport }> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({
+                data: {
+                    late: 5,
+                    pending: 3
+                }
+            });
+
+            // Uncomment below to simulate an error:
+            reject(new Error("Failed to fetch request counts daily"));
         }, 2000);
     });
 }

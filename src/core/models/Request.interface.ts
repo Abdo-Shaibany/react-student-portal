@@ -34,3 +34,4 @@ export interface RequestForm {
 
 export interface RequestDailyCount { date: string, count: number }
 
+export interface RequestTodayReport { pending: number, late: number }

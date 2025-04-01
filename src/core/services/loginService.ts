@@ -2,6 +2,7 @@
 
 import { LoginFormData } from "@/core/models/LoginForm.interface";
 import { NavigateFunction } from "react-router-dom";
+import { User } from "../models/User.interface";
 
 export function submitLoginRequest(formData: LoginFormData): Promise<{ requestNumber: number }> {
     return new Promise((resolve, reject) => {
@@ -30,4 +31,13 @@ export function isAuth() {
 
 export function isAdmin() {
     return true;
+}
+
+export function getUser(): User {
+    return {
+        phone: '771402072',
+        departmentId: "all",
+        name: "Abdullah",
+        totalRequests: 20
+    }
 }
