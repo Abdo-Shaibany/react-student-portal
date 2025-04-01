@@ -23,8 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const { t } = useTranslation();
 
-  const admin = isAdmin();
-  const [pages, setPages] = useState(sidebarPages(t).filter(page => page.isAdmin === admin));
+  const [pages, setPages] = useState(sidebarPages(t).filter(page => page.isAdmin === isAdmin()));
 
 
   const [user, setUser] = useState<User>({
@@ -40,8 +39,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       try {
         const response = await getRequestTodayReport();
         setPages(sidebarPages(t).filter(page => {
-          if(admin) return page;
-          return page.isAdmin !== admin;
+          if(isAdmin()) return true;
+          return page.isAdmin !== true;
         }).map(page => {
           if (page.title === t('navMain.studentRequests')) {
             return {
@@ -62,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     setUser(getUser());
 
     handleAsyncTodayReport();
-  }, [t, admin])
+  }, [t])
 
 
   return (
