@@ -24,7 +24,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { usersList } from "@/api/mock/users";
 import { User, UserFormData } from "@/core/models/User.interface";
 import { UserForm } from "./UserForm";
 import { useTranslation } from "react-i18next";
@@ -36,7 +35,7 @@ import ConfirmationModal from '@/components/confirm-deletion';
 
 export function UsersPage() {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<User[]>(usersList);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);

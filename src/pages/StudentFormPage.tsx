@@ -41,6 +41,7 @@ export function StudentFormPage() {
     setErrorMessage("");
     setLoading(true);
     try {
+      console.log(data, " data");
       const response = await submitStudentRequest(data);
       setLoading(false);
       setDialogOpen(true);
@@ -169,6 +170,7 @@ export function StudentFormPage() {
               type="file"
               accept=".pdf,image/*"
               multiple
+              // {...register("fileUpload")}
             />
           </div>
 

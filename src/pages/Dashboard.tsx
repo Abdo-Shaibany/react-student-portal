@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { departmentsList } from "@/api/mock/departments"
 import { useNavigate } from "react-router-dom"
 import {
   DropdownMenu,
@@ -35,15 +34,18 @@ import {
 import { MoreHorizontal } from "lucide-react"
 import { fetchRequests } from "@/core/services/requestService"
 import { Request } from "@/core/models/Request.interface"
-import { fetchDepartmentsReport } from "@/core/services/departmentService"
-import { DepartmentReport } from "@/core/models/Department.interface"
+import { fetchDepartments, fetchDepartmentsReport } from "@/core/services/departmentService"
+import { Department, DepartmentReport } from "@/core/models/Department.interface"
 import { useTranslation } from "react-i18next"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { RequestStatus } from "@/core/enum/requestStatus"
+import { getDaysDifference } from "@/lib/utils"
 
 export function DashboardPage() {
-  const [selectedDepartment, setSelectedDepartment] = useState("all")
+  const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [departments, setDepartments] = useState<Department[]>([]);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -56,30 +58,32 @@ export function DashboardPage() {
     setLoading(true);
     const fetchAndSetDepartmentsReport = async () => {
       const values = await fetchDepartmentsReport();
-      setDepartmentReport(values.data);
-      setLoading(false);
+      setDepartmentReport(values);
+      setDepartments(await fetchDepartments());
     };
+
     try {
       fetchAndSetDepartmentsReport();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false);
       toast(error.message)
     }
   }, [])
-  
+
 
   useEffect(() => {
     setLoading(true);
     const fetchAndSetRequests = async () => {
-      const values = await fetchRequests(selectedDepartment, RequestStatus.PENDING);
+      const values = await fetchRequests({ selectedDepartment, status: RequestStatus.PENDING });
       setRequests(values.data);
       setLoading(false);
     };
 
     try {
       fetchAndSetRequests();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false);
       toast(error.message)
@@ -88,16 +92,16 @@ export function DashboardPage() {
 
   if (loading) {
     return (
-        <div className="p-6 space-y-4">
-            <Skeleton className="h-10 w-[300px]" />
-            <div className="space-y-2">
-                {[...Array(5)].map((_, i) => (
-                    <Skeleton key={i} className="h-12 w-full" />
-                ))}
-            </div>
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-10 w-[300px]" />
+        <div className="space-y-2">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
         </div>
+      </div>
     )
-}
+  }
 
   return (
     <div className="space-y-8 m-4">
@@ -130,7 +134,7 @@ export function DashboardPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allDepartments")}</SelectItem>
-              {departmentsList.map((department) => (
+              {departments.map((department) => (
                 <SelectItem key={department.id} value={department.id!}>
                   {department.name}
                 </SelectItem>
@@ -152,18 +156,15 @@ export function DashboardPage() {
           </TableHeader>
           <TableBody>
             {requests.map((request) => (
-              <TableRow key={request.id}>
-                <TableCell className="font-medium">{request.id}</TableCell>
+              <TableRow key={request.requestNumber}>
+                <TableCell className="font-medium">{request.requestNumber}</TableCell>
                 <TableCell>{request.title}</TableCell>
                 <TableCell>{request.department.name}</TableCell>
                 <TableCell>
-                  {new Date(request.createdAt).toLocaleDateString()}
+                  {request.createdAtDate}
                 </TableCell>
                 <TableCell>
-                  {Math.floor(
-                    (new Date().getTime() - new Date(request.createdAt).getTime()) /
-                      (1000 * 60 * 60 * 24)
-                  )}
+                  {getDaysDifference(request.createdAtDate)} يوم
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>

@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Request, RequestDailyCount } from "@/core/models/Request.interface";
-import { requestsList } from "@/api/mock/requests";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAdmin } from "@/core/services/loginService";
@@ -39,7 +38,7 @@ import { fetchDepartments } from "@/core/services/departmentService";
 import { RequestStatus } from "@/core/enum/requestStatus";
 
 export function RequestsPage() {
-  const [requests, setRequests] = useState<Request[]>(requestsList);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [statusFilter, setStatusFilter] = useState<RequestStatus>(RequestStatus.ALL);
   const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest");
   const [departmentFilter, setDepartmentFilter] = useState("all");
@@ -86,7 +85,7 @@ export function RequestsPage() {
     const fetchFilteredRequests = async () => {
       try {
         setLoading(true);
-        const values = await fetchRequests(departmentFilter, statusFilter, searchQuery, dateOrder);
+        const values = await fetchRequests({selectedDepartment: departmentFilter, status: statusFilter, searchQuery, dateOrder});
         setRequests(values.data);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchRequests"));
@@ -236,7 +235,7 @@ export function RequestsPage() {
                   </span>
                 </TableCell>
                 <TableCell>{request.department.name}</TableCell>
-                <TableCell>{request.assignedTo.name}</TableCell>
+                <TableCell>{request.assignedTo?.name}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>

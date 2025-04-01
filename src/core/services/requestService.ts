@@ -1,4 +1,4 @@
-// src/services/requestService.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, RequestDailyCount, RequestForm, RequestTodayReport } from "@/core/models/Request.interface";
 import { RequestStatus } from "@/core/enum/requestStatus";
 
@@ -20,11 +20,16 @@ export async function fetchRequests(params: {
     page?: number;
     pageSize?: number;
 }): Promise<{ data: Request[] }> {
+
     const queryParams = new URLSearchParams();
-    if (params.selectedDepartment) queryParams.append("selectedDepartment", params.selectedDepartment);
-    if (params.status) queryParams.append("status", params.status);
+    const filters: any = {};
+
+    if (params.selectedDepartment && params.selectedDepartment !== 'all') filters.departmentId = params.selectedDepartment;
+    if (params.status && params.status !== 'all') filters.status = params.status;
+    if (params.dateOrder) filters.createAtDate = params.dateOrder;
+
+    queryParams.append("filters", JSON.stringify(filters));
     if (params.searchQuery) queryParams.append("search", params.searchQuery);
-    if (params.dateOrder) queryParams.append("dateOrder", params.dateOrder);
     if (params.page) queryParams.append("page", String(params.page));
     if (params.pageSize) queryParams.append("pageSize", String(params.pageSize));
 
@@ -82,6 +87,7 @@ export async function submitStudentRequest(formData: RequestForm): Promise<{ req
         headers: getAuthHeaders(),
         body: JSON.stringify(formData),
     });
+
     if (!response.ok) {
         throw new Error("Failed to submit request");
     }

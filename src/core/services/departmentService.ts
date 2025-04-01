@@ -68,7 +68,7 @@ export async function updateDepartment(department: Department): Promise<Departme
     return await response.json();
 }
 
-export async function fetchDepartmentsReport(): Promise<{ data: DepartmentReport[] }> {
+export async function fetchDepartmentsReport(): Promise<DepartmentReport[]> {
     const response = await fetch(`${BASE_URL}/departments/report`, {
         method: "GET",
         headers: getAuthHeaders(),

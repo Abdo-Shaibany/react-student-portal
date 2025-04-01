@@ -10,11 +10,12 @@ export interface Request {
     phone: string
     message: string
     createdAt: string
+    createdAtDate: string
     status: RequestStatus
     departmentId: string
-    assignedToId: string
+    assignedToId?: string
     department: Department
-    assignedTo: User
+    assignedTo?: User
     files: { name: string; type: 'pdf' | 'image', url: string }[]
     statusHistory: {
         status: RequestStatus
