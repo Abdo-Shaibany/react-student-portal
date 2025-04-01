@@ -1,71 +1,108 @@
-import { useState } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react"
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Download, FileText, ImageIcon } from "lucide-react"
-import { requestsList } from "@/api/mock/requests";
 import { useTranslation } from "react-i18next"
+import { RequestStatus, statusColors } from "@/core/enum/requestStatus"
+import { fetchRequestById, updateRequestStatus } from "@/core/services/requestService"
+import { Request } from "@/core/models/Request.interface"
+import { toast } from "sonner"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useNavigate } from "react-router-dom"
 
 export function RequestViewPage() {
-    const url = window.location.href;
-    const id = url.split('/').pop();
+  const url = window.location.href;
+  const id = url.split('/').pop();
 
-    const { t } = useTranslation();
+  const { t } = useTranslation();
+
+  const naviagte = useNavigate();
+
+  const [request, setRequest] = useState<Request | undefined>();
 
 
-    // TODO: handle fetching request from backend
-    // TODO: handle error when fetching
-    // TODO: handle loading state when fetching
+  const [loading, setLoading] = useState(true)
 
-    const request = requestsList.find(request => request.id === id)!;
+  useEffect(() => {
+    const fetchRequest = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchRequestById(id!);
+        setRequest(response.data);
 
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
-    const [newStatus, setNewStatus] = useState('')
-    const [comment, setComment] = useState('')
-    const [localRequest, setLocalRequest] = useState(request)
-
-    // TODO: move this to enum folder and add on-hold
-    const statusColors = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        inProgress: 'bg-blue-100 text-blue-800',
-        completed: 'bg-green-100 text-green-800'
+        if (!response.data) {
+          toast.error(t("error.noRequestFound"));
+          naviagte('/admin-portal/requests');
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false)
+      }
     }
 
-    // TODO: handle adding this to backend
-    // TODO: handle error when fetching
-    // TODO: handle loading state when fetching
-    const handleStatusChange = () => {
-        const newHistory = [...localRequest.statusHistory, {
-            status: newStatus as typeof request.statusHistory[0]['status'],
-            date: new Date().toISOString(),
-            comment
-        }]
+    fetchRequest()
+  }, [id, t, naviagte])
 
-        setLocalRequest(prev => ({
-            ...prev,
-            statusHistory: newHistory
-        }))
-        setIsDialogOpen(false)
-        setNewStatus('')
-        setComment('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [newStatus, setNewStatus] = useState('')
+  const [comment, setComment] = useState('')
+
+  const handleStatusChange = async () => {
+    setLoading(true)
+
+    try {
+      const updatedRequest = await updateRequestStatus(request!.id, newStatus as RequestStatus, comment)
+      if (updatedRequest)
+        setRequest(updatedRequest.data);
+
+      setIsDialogOpen(false)
+      setNewStatus('')
+      setComment('')
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
+    if (loading) {
+      return (
+        <div className="p-6 space-y-4">
+          <Skeleton className="h-10 w-[300px]" />
+          <div className="space-y-2">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    if(!request){
+      return <>No request is found</>;
     }
 
     return (
-        <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6">
         {/* Status Change Dialog */}
         <div className="flex items-center gap-2 justify-start">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -105,14 +142,14 @@ export function RequestViewPage() {
               </div>
             </DialogContent>
           </Dialog>
-  
+
           <span
             className={`px-2 mx-2 py-1 rounded-full text-sm ${statusColors[request.status]}`}
           >
             {t(`status.${request.status}`)}
           </span>
         </div>
-  
+
         {/* Accordions Section */}
         <Accordion
           type="multiple"
@@ -137,16 +174,16 @@ export function RequestViewPage() {
               <div className="grid grid-cols-2 gap-4 p-4">
                 <div>
                   <p className="text-sm text-muted-foreground">{t("label.name")}</p>
-                  <p>{localRequest.studentName}</p>
+                  <p>{request.studentName}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{t("label.phone")}</p>
-                  <p>{localRequest.phone}</p>
+                  <p>{request.phone}</p>
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
-  
+
           {/* Title */}
           <AccordionItem value="title">
             <AccordionTrigger>
@@ -157,10 +194,10 @@ export function RequestViewPage() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-4">
-              <p>{localRequest.title}</p>
+              <p>{request.title}</p>
             </AccordionContent>
           </AccordionItem>
-  
+
           {/* Message */}
           <AccordionItem value="message">
             <AccordionTrigger>
@@ -169,22 +206,22 @@ export function RequestViewPage() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-4">
-              <p className="whitespace-pre-wrap">{localRequest.message}</p>
+              <p className="whitespace-pre-wrap">{request.message}</p>
             </AccordionContent>
           </AccordionItem>
-  
+
           {/* Files */}
           <AccordionItem value="files">
             <AccordionTrigger>
               <div className="flex items-center gap-2">
                 <span className="font-medium">
-                  {t("accordion.attachedFiles", { count: localRequest.files.length })}
+                  {t("accordion.attachedFiles", { count: request.files.length })}
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-4">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {localRequest.files.map((file, index) => (
+                {request.files.map((file, index) => (
                   <a
                     key={index}
                     href={file.url}
@@ -204,7 +241,7 @@ export function RequestViewPage() {
               </div>
             </AccordionContent>
           </AccordionItem>
-  
+
           {/* Status History */}
           <AccordionItem value="status-history">
             <AccordionTrigger>
@@ -214,11 +251,11 @@ export function RequestViewPage() {
             </AccordionTrigger>
             <AccordionContent className="p-4">
               <div className="space-y-4">
-                {localRequest.statusHistory.map((history, index) => (
+                {request.statusHistory.map((history, index) => (
                   <div key={index} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <div className={`h-3 w-3 rounded-full ${statusColors[history.status]}`} />
-                      {index < localRequest.statusHistory.length - 1 && (
+                      {index < request.statusHistory.length - 1 && (
                         <div className="w-px h-full bg-border" />
                       )}
                     </div>
@@ -245,4 +282,4 @@ export function RequestViewPage() {
         </Accordion>
       </div>
     )
-}
+  }

@@ -51,3 +51,47 @@ export function fetchRequestCountsDaily(): Promise<{ data: RequestDailyCount[] }
         }, 2000);
     });
 }
+
+export function fetchRequestById(id: string): Promise<{ data: Request | undefined }> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const request = requestsList.find(request => request.id === id);
+
+            if (!request) {
+                reject(new Error("Could not find a request with that id"));
+            }
+
+            resolve({ data: request });
+
+            // Uncomment below to simulate an error:
+            reject(new Error("Failed to fetch request by id"));
+        }, 2000);
+    });
+}
+
+export function updateRequestStatus(id: string, status: RequestStatus, comment: string): Promise<{ data: Request | undefined }> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const request = requestsList.find(request => request.id === id);
+
+            if (!request) {
+                reject(new Error("Could not find a request with that id"));
+                return;
+            }
+
+            const newHistory = [...request.statusHistory, {
+                status: status as typeof request.statusHistory[0]['status'],
+                date: new Date().toISOString(),
+                comment
+            }];
+
+            request.statusHistory = newHistory;
+
+
+            resolve({ data: request });
+
+            // Uncomment below to simulate an error:
+            reject(new Error("Failed to update request status"));
+        }, 2000);
+    });
+}
