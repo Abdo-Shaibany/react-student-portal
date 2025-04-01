@@ -153,7 +153,9 @@ const resources = {
       },
       "action": {
         "viewDetails": "View Details"
-      }
+      },
+      "department.all": "All Departments",
+      "employee.all": "All Employees",
     }
   },
   ar: {
@@ -307,7 +309,9 @@ const resources = {
       },
       "action": {
         "viewDetails": "عرض التفاصيل"
-      }
+      },
+      "department.all": "جميع الاقسام",
+      "employee.all": "جميع الموظفين",
     },
   }
 };

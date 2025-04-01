@@ -7,16 +7,16 @@ export const getBreadcrumbItems = (pathname: string) => {
         'admin-portal': 'Admin Portal',
         dashboard: 'Dashboard',
         departments: 'Departments',
-        'user-management': 'User Management',
-        'student-requests': 'Student Requests',
+        'users': 'User Management',
+        'requests': 'Student Requests',
     }
 
     const breadcrumbMapAr: Record<string, string> = {
         'admin-portal': 'الوحده الادارية',
         dashboard: 'لوحة التحكم',
         departments: 'الادارات',
-        'user-management': 'ادارة المستخدمين',
-        'student-requests': 'طلبات الطلاب',
+        'users': 'ادارة المستخدمين',
+        'requests': 'طلبات الطلاب',
     }
 
     return pathSegments.map((segment, index) => {

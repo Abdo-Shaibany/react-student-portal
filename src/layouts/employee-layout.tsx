@@ -15,13 +15,26 @@ import {
 } from "@/components/ui/sidebar"
 import { getBreadcrumbItems } from "@/lib/breadcrumb"
 import { Outlet } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom";
 
 // TODO: handle language
 export default function EmployeeLayout() {
   const currentPath = window.location.pathname
-  const breadcrumbItems = getBreadcrumbItems(currentPath);
+  const [breadcrumbItems, setBreadcrumbItems] = useState(getBreadcrumbItems(currentPath));
 
   const labelKey = localStorage.getItem('i18nextLng') === 'ar' ? 'labelAr' : 'label';
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const currentPath = window.location.pathname
+      const breadcrumbItems = getBreadcrumbItems(currentPath);
+      setBreadcrumbItems(breadcrumbItems);
+    };
+
+    handleUrlChange();
+  }, [location]);
 
   return (
     <SidebarProvider>
