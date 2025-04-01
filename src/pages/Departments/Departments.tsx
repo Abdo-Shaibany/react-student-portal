@@ -31,7 +31,6 @@ import { DepartmentForm } from "./DepartmentForm"
 import { createDepartment, deleteDepartmentById, fetchDepartments, updateDepartment } from "@/core/services/departmentService"
 import { t } from "i18next"
 
-// TODO: handle language
 export function DepartmentsPage() {
     const [departments, setDepartments] = useState<Department[]>([])
     const [searchQuery, setSearchQuery] = useState("")
@@ -57,7 +56,7 @@ export function DepartmentsPage() {
             setDepartments(values);
             setLoading(false);
         };
-        
+
         try {
             fetchAndSetDepartments();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

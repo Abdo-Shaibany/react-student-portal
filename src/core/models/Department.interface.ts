@@ -10,3 +10,8 @@ export interface DepartmentReport {
     pending: number;
     late: number;
 }
+
+export interface DepartmentForm {
+    id: string;
+    name: string;
+}

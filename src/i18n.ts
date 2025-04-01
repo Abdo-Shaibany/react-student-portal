@@ -80,6 +80,15 @@ const resources = {
       'Next': 'Next',
       'Page {{page}}': 'Page {{page}}',
       'No departments found': 'No departments found',
+      "form": {
+        "departmentName": "Department Name",
+        "saveChanges": "Save Changes",
+        "createDepartment": "Create Department"
+      },
+      "validation": {
+        "nameRequired": "Department name is required",
+        "nameMin": "Name must be at least 3 characters"
+      },
     }
   },
   ar: {
@@ -160,7 +169,16 @@ const resources = {
       'Next': 'التالي',
       'Page {{page}}': 'الصفحة {{page}}',
       'No departments found': 'لم يتم العثور على أقسام',
-    }
+      "form": {
+        "departmentName": "اسم القسم",
+        "saveChanges": "حفظ التغييرات",
+        "createDepartment": "إنشاء قسم"
+      },
+      "validation": {
+        "nameRequired": "اسم القسم مطلوب",
+        "nameMin": "يجب أن يكون الاسم 3 أحرف على الأقل"
+      },
+    },
   }
 };
 
