@@ -117,6 +117,42 @@ const resources = {
         "userUpdated": "User updated successfully",
         "userCreated": "User created successfully",
         "userDeleted": "User deleted successfully"
+      },
+      "chart": {
+        "requestsPerDay": "Requests Per Day"
+      },
+      "filter": {
+        "status": "Filter by status",
+        "department": "Filter by department",
+        "employee": "Filter by employee"
+      },
+      "status": {
+        "all": "All Statuses",
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "completed": "Completed"
+      },
+      "sort": {
+        "date": "Sort by date",
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First"
+      },
+      "search": {
+        "requests": "Search requests..."
+      },
+      "table": {
+        "requestNumber": "Request #",
+        "studentName": "Student Name",
+        "title": "Title",
+        "phone": "Phone",
+        "createdAt": "Created At",
+        "status": "Status",
+        "department": "Department",
+        "assignedTo": "Assigned To",
+        "actions": "Actions"
+      },
+      "action": {
+        "viewDetails": "View Details"
       }
     }
   },
@@ -235,6 +271,42 @@ const resources = {
         "userUpdated": "تم تعديل المستخدم بنجاح",
         "userCreated": "تم إنشاء المستخدم بنجاح",
         "userDeleted": "تم حذف المستخدم بنجاح"
+      },
+      "chart": {
+        "requestsPerDay": "الطلبات يوميًا"
+      },
+      "filter": {
+        "status": "تصفية حسب الحالة",
+        "department": "تصفية حسب القسم",
+        "employee": "تصفية حسب الموظف"
+      },
+      "status": {
+        "all": "جميع الحالات",
+        "pending": "معلق",
+        "inProgress": "قيد التنفيذ",
+        "completed": "مكتمل"
+      },
+      "sort": {
+        "date": "ترتيب حسب التاريخ",
+        "newestFirst": "الأحدث أولاً",
+        "oldestFirst": "الأقدم أولاً"
+      },
+      "search": {
+        "requests": "ابحث عن الطلبات..."
+      },
+      "table": {
+        "requestNumber": "رقم الطلب",
+        "studentName": "اسم الطالب",
+        "title": "العنوان",
+        "phone": "الهاتف",
+        "createdAt": "تاريخ الإنشاء",
+        "status": "الحالة",
+        "department": "القسم",
+        "assignedTo": "المسؤول",
+        "actions": "الإجراءات"
+      },
+      "action": {
+        "viewDetails": "عرض التفاصيل"
       }
     },
   }
