@@ -1,4 +1,5 @@
-import { useState } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -6,90 +7,130 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
-import { usersList } from "@/api/mock/users"
-import { User } from "@/core/models/User.interface"
-import { departmentsList } from "@/api/mock/departments"
-import { UserForm } from "./UserForm"
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { usersList } from "@/api/mock/users";
+import { User, UserFormData } from "@/core/models/User.interface";
+import { departmentsList } from "@/api/mock/departments";
+import { UserForm } from "./UserForm";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
-// TODO: handle language
 export function UsersPage() {
-  const [users, setUsers] = useState<User[]>(usersList)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
+  const { t } = useTranslation();
+  const [users, setUsers] = useState<User[]>(usersList);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // TODO: fetch users from backend with search, order, and pagination
-  // TODO: handle error when fetching users
-  // TODO: handle loading state when fetching users
+  // Simulate fetching users from the backend with search and order
+  useEffect(() => {
+    setLoading(true);
+    const fetchUsers = async () => {
+      try {
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const filtered = usersList
+          .filter((user) =>
+            user.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .sort((a, b) =>
+            sortOrder === "asc"
+              ? a.totalRequests - b.totalRequests
+              : b.totalRequests - a.totalRequests
+          );
+        setUsers(filtered);
+      } catch (error: any) {
+        toast.error(error.message || t("error.fetchUsers"));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, [searchQuery, sortOrder, t]);
 
-  // Filter and sort users
-  const filteredUsers = users
-    .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => sortOrder === "asc" ? a.totalRequests - b.totalRequests : b.totalRequests - a.totalRequests)
-
-  // TODO: handle create and update
-  // TODO: handle loading state when submitting form
-  // TODO: handle error when submitting form
-  // TODO: fetch data again after deleting
-  const handleSubmit = (values: User) => {
-    if (isEditMode && selectedUser) {
-      setUsers(prev => prev.map(user => user.id === selectedUser.id ? values : user))
-    } else {
-      setUsers(prev => [...prev, { ...values, id: (prev.length + 1).toString(), totalRequests: 0 }])
+  // Handle create and update
+  const handleSubmit = (values: UserFormData) => {
+    setLoading(true);
+    try {
+      if (isEditMode && selectedUser) {
+        setUsers((prev) =>
+          prev.map((user) => (user.id === selectedUser.id ? { ...user, ...values } : user))
+        );
+        toast.success(t("success.userUpdated"));
+      } else {
+        setUsers((prev) => [
+          ...prev,
+          { ...values, id: (prev.length + 1).toString(), totalRequests: 0 },
+        ]);
+        toast.success(t("success.userCreated"));
+      }
+    } catch (error: any) {
+      toast.error(error.message || t("error.submitUser"));
+    } finally {
+      setLoading(false);
+      setIsDialogOpen(false);
     }
-    setIsDialogOpen(false)
-  }
+  };
 
-  // TODO: handle delete from backend
-  // TODO: handle error when deleting
-  // TODO: handle loading state when deleting
-  // TODO: fetch data again after deleting
+  // Handle delete
   const handleDelete = (id: string) => {
-    setUsers(prev => prev.filter(user => user.id !== id))
-  }
+    setLoading(true);
+    try {
+      setUsers((prev) => prev.filter((user) => user.id !== id));
+      toast.success(t("success.userDeleted"));
+    } catch (error: any) {
+      toast.error(error.message || t("error.deleteUser"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredUsers = users;
 
   return (
     <div className="p-6 space-y-4">
       {/* Header with Search and Create Button */}
       <div className="flex items-center justify-between">
         <Input
-          placeholder="Search users..."
+          placeholder={t("form.searchUsers")}
           className="max-w-xs"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => {
-              setIsEditMode(false)
-              setSelectedUser(null)
-            }}>
-              Create User
+            <Button
+              onClick={() => {
+                setIsEditMode(false);
+                setSelectedUser(null);
+              }}
+            >
+              {t("form.createUser")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {isEditMode ? "Edit User" : "Create New User"}
+                {isEditMode ? t("form.editUser") : t("form.createNewUser")}
               </DialogTitle>
             </DialogHeader>
             <UserForm
@@ -102,66 +143,73 @@ export function UsersPage() {
       </div>
 
       {/* Users Table */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Department</TableHead>
-            <TableHead>
-              <Button
-                variant="ghost"
-                onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
-              >
-                Requests Handled {sortOrder === "asc" ? "↑" : "↓"}
-              </Button>
-            </TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredUsers.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.department?.name ?? "unassing"}</TableCell>
-              <TableCell>{user.totalRequests}</TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setIsEditMode(true)
-                        setSelectedUser(user)
-                        setIsDialogOpen(true)
-                      }}
-                    >
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-red-600"
-                      onClick={() => handleDelete(user.id)}
-                    >
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+      {loading ? (
+        <div className="text-center py-8">{t("loading")}</div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("form.name")}</TableHead>
+              <TableHead>{t("form.phone")}</TableHead>
+              <TableHead>{t("form.department")}</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+                  }
+                >
+                  {t("form.requestsHandled")} {sortOrder === "asc" ? "↑" : "↓"}
+                </Button>
+              </TableHead>
+              <TableHead>{t("form.actions")}</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.phone}</TableCell>
+                <TableCell>{user.department?.name ?? t("form.unassigned")}</TableCell>
+                <TableCell>{user.totalRequests}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setIsEditMode(true);
+                          setSelectedUser(user);
+                          setIsDialogOpen(true);
+                        }}
+                      >
+                        {t("form.edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => handleDelete(user.id)}
+                      >
+                        {t("form.delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
       {/* Empty State */}
       {filteredUsers.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          No users found
+          {t("form.noUsersFound")}
         </div>
       )}
     </div>
-  )
+  );
 }
 
+export default UsersPage;
