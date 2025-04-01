@@ -41,7 +41,7 @@ export function RequestViewPage() {
     // TODO: move this to enum folder and add on-hold
     const statusColors = {
         pending: 'bg-yellow-100 text-yellow-800',
-        'in-progress': 'bg-blue-100 text-blue-800',
+        inProgress: 'bg-blue-100 text-blue-800',
         completed: 'bg-green-100 text-green-800'
     }
 
@@ -86,7 +86,7 @@ export function RequestViewPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pending">{t("status.pending")}</SelectItem>
-                    <SelectItem value="in-progress">{t("status.inProgress")}</SelectItem>
+                    <SelectItem value="inProgress">{t("status.inProgress")}</SelectItem>
                     <SelectItem value="completed">{t("status.completed")}</SelectItem>
                   </SelectContent>
                 </Select>

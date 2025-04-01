@@ -34,6 +34,6 @@ export interface RequestForm {
 
 export enum RequestStatus {
     PENDING = "pending",
-    IN_PROGRESS = "in-progress",
+    IN_PROGRESS = "inProgress",
     COMPLETED = "completed",
 }

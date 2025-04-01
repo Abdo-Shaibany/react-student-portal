@@ -95,7 +95,7 @@ export function StudentFormPage() {
             />
             {errors.phone && (
               <span className="text-red-500 text-sm">
-                {errors.phone.message}
+                {t(errors.phone.message ?? '')}
               </span>
             )}
           </div>

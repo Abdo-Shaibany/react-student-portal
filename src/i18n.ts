@@ -105,7 +105,8 @@ const resources = {
         "nameMin": "Name must be at least 3 characters",
         "nameRequired": "Name is required",
         "passwordRequired": "Password is required",
-        "departmentRequired": "Department is required"
+        "departmentRequired": "Department is required",
+        "yemenPhone": "Invalid phone number. Must start with 7 followed by 7, 3, 8, or 0 and then 7 digits.",
       },
       "loading": "Loading...",
       "error": {
@@ -132,7 +133,6 @@ const resources = {
         "inProgress": "In Progress",
         "completed": "Completed",
       },
-
       "sort": {
         "date": "Sort by date",
         "newestFirst": "Newest First",
@@ -288,7 +288,8 @@ const resources = {
         "nameMin": "يجب أن يكون الاسم 3 أحرف على الأقل",
         "nameRequired": "الاسم مطلوب",
         "passwordRequired": "كلمة المرور مطلوبة",
-        "departmentRequired": "القسم مطلوب"
+        "departmentRequired": "القسم مطلوب",
+        "yemenPhone": "رقم الهاتف غير صحيح. يجب أن يبدأ بالرقم 7 متبوعًا بالرقم 7 أو 3 أو 8 أو 0 ثم 7 أرقام.",
       },
       "loading": "جار التحميل...",
       "error": {

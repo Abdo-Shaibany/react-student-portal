@@ -7,11 +7,11 @@ export function submitStudentRequest(formData: RequestForm): Promise<{ requestNu
         console.log(formData)
         setTimeout(() => {
             // Simulate success by generating a random request number
-            // const requestNumber = Math.floor(100000 + Math.random() * 900000);
-            // resolve({ requestNumber });
+            const requestNumber = Math.floor(100000 + Math.random() * 900000);
+            resolve({ requestNumber });
 
             // Uncomment below to simulate an error:
-            reject(new Error("Failed to submit request"));
+            // reject(new Error("Failed to submit request"));
         }, 2000);
     });
 }

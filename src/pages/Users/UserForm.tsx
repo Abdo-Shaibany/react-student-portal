@@ -56,7 +56,7 @@ export function UserForm({
           id="phone"
           {...register("phone", YemenPhoneValidations)}
         />
-        {errors.phone && <p className="text-red-600 text-sm">{errors.phone.message}</p>}
+        {errors.phone && <p className="text-red-600 text-sm">{t(errors.phone.message ?? '')}</p>}
       </div>
 
       {/* Show password field only when creating a new user */}
