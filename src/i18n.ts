@@ -72,11 +72,18 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en", // default language
+    lng: "ar",
     fallbackLng: "en",
     interpolation: {
       escapeValue: false
-    }
+    },
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage']
+    },
   });
+
+const currentLanguage = localStorage.getItem('i18nextLng') || 'en';
+document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
 
 export default i18n;

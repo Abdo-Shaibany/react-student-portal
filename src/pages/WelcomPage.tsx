@@ -12,6 +12,7 @@ export function WelcomePage() {
     i18n.changeLanguage(newLang);
     
     document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    localStorage.setItem("i18nextLng", newLang);
   };
 
   return (
