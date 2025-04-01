@@ -31,7 +31,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     phone: '',
     departmentId: "",
     name: "",
-    totalRequests: 0
+    totalRequests: 0,
+    isAdmin: false,
   });
 
   useEffect(() => {
@@ -40,14 +41,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         const response = await getRequestTodayReport();
         setPages(sidebarPages(t).filter(page => {
           if(admin) return page;
-          return page.isAdmin !== admin
+          return page.isAdmin !== admin;
         }).map(page => {
           if (page.title === t('navMain.studentRequests')) {
             return {
               ...page,
               badge: {
-                late: response.data.late,
-                new: response.data.pending
+                late: response.late,
+                new: response.pending
               }
             }
           }

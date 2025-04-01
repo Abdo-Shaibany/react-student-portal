@@ -1,128 +1,100 @@
-// src/services/studentRequestService.ts
-
-import { requestsList } from "@/api/mock/requests";
+// src/services/requestService.ts
 import { Request, RequestDailyCount, RequestForm, RequestTodayReport } from "@/core/models/Request.interface";
-import { RequestStatus } from "../enum/requestStatus";
+import { RequestStatus } from "@/core/enum/requestStatus";
 
-export function fetchRequests(selectedDepartment: string, status: RequestStatus, searchQuery?: string, dateOrder?: string): Promise<{ data: Request[] }> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            let filteredRequests = requestsList.filter(request => {
-                const filtered = selectedDepartment === "all" ? true : (request.department.id === selectedDepartment);
-                return status === request.status && filtered;
-            })
+const BASE_URL = "http://localhost:3000/api";
 
-            filteredRequests = requestsList
-                .filter(request => {
-                    const matchesSearch = [
-                        request.requestNumber,
-                        request.studentName,
-                        request.phone,
-                    ].some(value => value.toLowerCase().includes((searchQuery ?? '').toLowerCase()));
-                    return request.department && request.assignedTo && matchesSearch;
-                })
-                .sort((a, b) =>
-                    dateOrder === "newest"
-                        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                );
-
-            resolve({ data: filteredRequests });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to submit request"));
-        }, 2000);
-    });
+function getAuthHeaders() {
+    const token = localStorage.getItem("token") || "";
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    };
 }
 
-export function fetchRequestCountsDaily(): Promise<{ data: RequestDailyCount[] }> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const chartData = [
-                { date: "2024-03-01", count: 12 },
-                { date: "2024-03-02", count: 18 },
-                { date: "2024-03-03", count: 9 },
-            ];
+export async function fetchRequests(params: {
+    selectedDepartment?: string;
+    status?: RequestStatus;
+    searchQuery?: string;
+    dateOrder?: string;
+    page?: number;
+    pageSize?: number;
+}): Promise<{ data: Request[] }> {
+    const queryParams = new URLSearchParams();
+    if (params.selectedDepartment) queryParams.append("selectedDepartment", params.selectedDepartment);
+    if (params.status) queryParams.append("status", params.status);
+    if (params.searchQuery) queryParams.append("search", params.searchQuery);
+    if (params.dateOrder) queryParams.append("dateOrder", params.dateOrder);
+    if (params.page) queryParams.append("page", String(params.page));
+    if (params.pageSize) queryParams.append("pageSize", String(params.pageSize));
 
-            resolve({ data: chartData });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to fetch request counts daily"));
-        }, 2000);
+    const response = await fetch(`${BASE_URL}/requests?${queryParams.toString()}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
     });
+    if (!response.ok) {
+        throw new Error("Failed to fetch requests");
+    }
+    return await response.json();
 }
 
-export function fetchRequestById(id: string): Promise<{ data: Request | undefined }> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const request = requestsList.find(request => request.id === id);
-
-            if (!request) {
-                reject(new Error("Could not find a request with that id"));
-            }
-
-            resolve({ data: request });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to fetch request by id"));
-        }, 2000);
+export async function fetchRequestCountsDaily(): Promise<{ data: RequestDailyCount[] }> {
+    const response = await fetch(`${BASE_URL}/requests/daily-count`, {
+        method: "GET",
+        headers: getAuthHeaders(),
     });
+    if (!response.ok) {
+        throw new Error("Failed to fetch request counts daily");
+    }
+    return await response.json();
 }
 
-export function updateRequestStatus(id: string, status: RequestStatus, comment: string): Promise<{ data: Request | undefined }> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const request = requestsList.find(request => request.id === id);
-
-            if (!request) {
-                reject(new Error("Could not find a request with that id"));
-                return;
-            }
-
-            const newHistory = [...request.statusHistory, {
-                status: status as typeof request.statusHistory[0]['status'],
-                date: new Date().toISOString(),
-                comment
-            }];
-
-            request.statusHistory = newHistory;
-
-
-            resolve({ data: request });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to update request status"));
-        }, 2000);
+export async function fetchRequestById(id: string): Promise<{ data: Request | undefined }> {
+    const response = await fetch(`${BASE_URL}/requests/${id}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
     });
+    if (!response.ok) {
+        throw new Error("Failed to fetch request by id");
+    }
+    return await response.json();
 }
 
-export function submitStudentRequest(formData: RequestForm): Promise<{ requestNumber: number }> {
-    return new Promise((resolve, reject) => {
-        // Simulate a network delay of 2 seconds
-        console.log(formData)
-        setTimeout(() => {
-            // Simulate success by generating a random request number
-            const requestNumber = Math.floor(100000 + Math.random() * 900000);
-            resolve({ requestNumber });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to submit request"));
-        }, 2000);
+export async function updateRequestStatus(
+    id: string,
+    status: RequestStatus,
+    comment: string
+): Promise<{ data: Request | undefined }> {
+    const response = await fetch(`${BASE_URL}/requests/${id}/status`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ status, comment }),
     });
+    if (!response.ok) {
+        throw new Error("Failed to update request status");
+    }
+    return await response.json();
 }
 
-export function getRequestTodayReport(): Promise<{ data: RequestTodayReport }> {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve({
-                data: {
-                    late: 5,
-                    pending: 3
-                }
-            });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to fetch request counts daily"));
-        }, 2000);
+export async function submitStudentRequest(formData: RequestForm): Promise<{ requestNumber: number }> {
+    const response = await fetch(`${BASE_URL}/requests`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(formData),
     });
+    if (!response.ok) {
+        throw new Error("Failed to submit request");
+    }
+    return await response.json();
+}
+
+export async function getRequestTodayReport(): Promise<RequestTodayReport> {
+    const response = await fetch(`${BASE_URL}/requests/today-report`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to fetch today's report");
+    }
+    return await response.json();
 }

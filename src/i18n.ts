@@ -182,7 +182,12 @@ const resources = {
       "label": {
         "name": "Name",
         "phone": "Phone"
-      }
+      },
+      "delete": "Delete",
+      "confirmDeleteTitle": "Are you sure you want to delete this?",
+      "confirmDeleteMessage": "This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
     }
   },
   ar: {
@@ -364,7 +369,12 @@ const resources = {
       "label": {
         "name": "الاسم",
         "phone": "الهاتف"
-      }
+      },
+      "delete": "حذف",
+      "confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذا؟",
+      "confirmDeleteMessage": "هذه الإجراءات لا يمكن التراجع عنها.",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد"
     },
   }
 };

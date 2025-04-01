@@ -27,6 +27,7 @@ export function UserForm({
     } = useForm<UserFormData>({
       mode: "onChange",
       defaultValues: {
+        id: user?.id,
         name: user?.name || "",
         phone: user?.phone || "",
         password: "",

@@ -1,55 +1,63 @@
-import { usersList } from "@/api/mock/users";
-import { User, UserFormData } from "../models/User.interface";
+// src/services/userService.ts
+import { User, UserFormData } from "@/core/models/User.interface";
 
-export function fetchUsers(searchQuery?: string, sortOrder?: string): Promise<User[]> {
-    return Promise.resolve(
-        (usersList ?? [])
-            .filter(
-                (user) =>
-                    !searchQuery ||
-                    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .sort((a, b) =>
-                sortOrder === "asc"
-                    ? (a.totalRequests ?? 0) - (b.totalRequests ?? 0)
-                    : (b.totalRequests ?? 0) - (a.totalRequests ?? 0)
-            )
-    );
+const BASE_URL = "http://localhost:3000/api";
+
+function getAuthHeaders() {
+    const token = localStorage.getItem("token") || "";
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    };
 }
 
-export function createUser(user: UserFormData): Promise<User> {
-    return new Promise((resolve, reject) => {
-        const newUser = {
-            id: (usersList.length + 1).toString(),
-            ...user,
-            totalRequests: 0,
-        };
-        usersList.push(newUser);
-        resolve(newUser);
+export async function fetchUsers(searchQuery?: string, sortOrder?: string): Promise<User[]> {
+    const params = new URLSearchParams();
+    if (searchQuery) params.append("search", searchQuery);
+    if (sortOrder) params.append("sortOrder", sortOrder);
 
-        reject("hi")
+    const response = await fetch(`${BASE_URL}/users?${params.toString()}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
     });
+    if (!response.ok) {
+        throw new Error("Failed to fetch users");
+    }
+    return await response.json();
 }
 
-export function updateUser(id: string, user: UserFormData): Promise<User> {
-    return new Promise((resolve, reject) => {
-        const existingUser = usersList.find((user) => user.id === id);
-        if (existingUser) {
-            resolve({ ...existingUser, ...user });
-        } else {
-            reject(new Error(`User with id ${id} not found`));
-        }
+export async function createUser(user: UserFormData): Promise<User> {
+    const response = await fetch(`${BASE_URL}/users`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(user),
     });
+    if (!response.ok) {
+        throw new Error("Failed to create user");
+    }
+    return await response.json();
 }
 
-export function deleteUser(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const userIndex = usersList.findIndex((user) => user.id === id);
-        if (userIndex === -1) {
-            reject(new Error(`User with id ${id} not found`));
-        } else {
-            usersList.splice(userIndex, 1);
-            resolve();
-        }
+export async function updateUser(id: string, user: UserFormData): Promise<User> {
+    if (!user.password) delete user.password;
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(user),
     });
+    if (!response.ok) {
+        throw new Error("Failed to update user");
+    }
+    return await response.json();
+}
+
+export async function deleteUser(id: string): Promise<void> {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to delete user");
+    }
+    return;
 }

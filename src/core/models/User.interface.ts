@@ -8,6 +8,7 @@ export interface User {
     department?: Department
     totalRequests: number
     password?: string
+    isAdmin: boolean
 }
 
 export interface UserFormData {

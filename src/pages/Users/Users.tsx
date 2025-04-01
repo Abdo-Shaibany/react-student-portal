@@ -26,11 +26,13 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { usersList } from "@/api/mock/users";
 import { User, UserFormData } from "@/core/models/User.interface";
-import { departmentsList } from "@/api/mock/departments";
 import { UserForm } from "./UserForm";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { createUser, deleteUser, fetchUsers, updateUser } from "@/core/services/usersService";
+import { fetchDepartments } from "@/core/services/departmentService";
+import { Department } from "@/core/models/Department.interface";
+import ConfirmationModal from '@/components/confirm-deletion';
 
 export function UsersPage() {
   const { t } = useTranslation();
@@ -41,6 +43,10 @@ export function UsersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -57,6 +63,23 @@ export function UsersPage() {
     getUsers();
   }, [searchQuery, sortOrder, t]);
 
+  useEffect(() => {
+    const getDeprtments = async () => {
+      try {
+        setLoading(true);
+        const deps = await fetchDepartments();
+        setDepartments(deps);
+      } catch (error: any) {
+        toast.error(error.message || t("error.submitUser"));
+      } finally {
+        setLoading(false);
+        setIsDialogOpen(false);
+      }
+    }
+
+    getDeprtments();
+  }, [t]);
+
   const handleSubmit = async (values: UserFormData) => {
     setLoading(true);
     try {
@@ -67,6 +90,9 @@ export function UsersPage() {
         await createUser(values);
         toast.success(t("success.userCreated"));
       }
+
+      const filtered = await fetchUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.submitUser"));
     } finally {
@@ -75,11 +101,21 @@ export function UsersPage() {
     }
   };
 
+  const handleDeleteClick = (id: string) => {
+    setSelectedUserId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
+    setSelectedUserId(null);
+  };
+
   // Handle delete
-  const handleDelete = async (id: string) => {
+  const handleConfirmDelete = async () => {
     setLoading(true);
     try {
-      await deleteUser(id);
+      await deleteUser(selectedUserId!);
       toast.success(t("success.userDeleted"));
       const filtered = await fetchUsers(searchQuery, sortOrder);
       setUsers(filtered);
@@ -94,7 +130,7 @@ export function UsersPage() {
     <div className="p-6 space-y-4">
       {/* Header with Search and Create Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <Input
+        <Input
           placeholder={t("form.searchUsers")}
           className="max-w-xs"
           value={searchQuery}
@@ -119,7 +155,7 @@ export function UsersPage() {
             </DialogHeader>
             <UserForm
               user={selectedUser}
-              departments={departmentsList}
+              departments={departments}
               onSubmit={handleSubmit}
             />
           </DialogContent>
@@ -173,7 +209,7 @@ export function UsersPage() {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-red-600"
-                        onClick={() => handleDelete(user.id!)}
+                        onClick={() => handleDeleteClick(user.id!)}
                       >
                         {t("form.delete")}
                       </DropdownMenuItem>
@@ -192,6 +228,12 @@ export function UsersPage() {
           {t("form.noUsersFound")}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 }
