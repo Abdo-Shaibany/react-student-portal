@@ -38,35 +38,65 @@ import { Request, RequestStatus } from "@/core/models/Request.interface"
 import { fetchDepartmentsReport } from "@/services/departmentService"
 import { DepartmentReport } from "@/core/models/Department.interface"
 import { useTranslation } from "react-i18next"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
 
-
-// TODO: handle language
 export function DashboardPage() {
   const [selectedDepartment, setSelectedDepartment] = useState("all")
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-
   const [requests, setRequests] = useState<Request[]>([])
   const [departmentsReport, setDepartmentReport] = useState<DepartmentReport[]>([])
+  const [loading, setLoading] = useState(true)
 
 
   useEffect(() => {
+    setLoading(true);
     const fetchAndSetDepartmentsReport = async () => {
       const values = await fetchDepartmentsReport();
       setDepartmentReport(values.data);
+      setLoading(false);
     };
-    fetchAndSetDepartmentsReport();
+    try {
+      fetchAndSetDepartmentsReport();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setLoading(false);
+      toast(error.message)
+    }
   }, [])
   
 
   useEffect(() => {
+    setLoading(true);
     const fetchAndSetRequests = async () => {
       const values = await fetchRequests(selectedDepartment, RequestStatus.PENDING);
       setRequests(values.data);
+      setLoading(false);
     };
-    fetchAndSetRequests();
-  }, [selectedDepartment])
+
+    try {
+      fetchAndSetRequests();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setLoading(false);
+      toast(error.message)
+    }
+  }, [selectedDepartment]);
+
+  if (loading) {
+    return (
+        <div className="p-6 space-y-4">
+            <Skeleton className="h-10 w-[300px]" />
+            <div className="space-y-2">
+                {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                ))}
+            </div>
+        </div>
+    )
+}
 
   return (
     <div className="space-y-8 m-4">
