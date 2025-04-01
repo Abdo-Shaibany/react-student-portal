@@ -19,7 +19,9 @@ import { Outlet } from "react-router-dom"
 // TODO: handle language
 export default function EmployeeLayout() {
   const currentPath = window.location.pathname
-  const breadcrumbItems = getBreadcrumbItems(currentPath)
+  const breadcrumbItems = getBreadcrumbItems(currentPath);
+
+  const labelKey = localStorage.getItem('i18nextLng') === 'ar' ? 'labelAr' : 'label';
 
   return (
     <SidebarProvider>
@@ -34,10 +36,10 @@ export default function EmployeeLayout() {
                 <span key={item.href} className="flex items-center gap-2">
                   <BreadcrumbItem>
                     {index === breadcrumbItems.length - 1 ? (
-                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      <BreadcrumbPage>{item[labelKey]}</BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink href={item.href}>
-                        {item.label}
+                        {item[labelKey]}
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>

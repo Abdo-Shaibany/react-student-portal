@@ -53,8 +53,10 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const side = localStorage.getItem('i18nextLng') === 'ar' ? 'right' : 'left';
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" side={side} {...props}>
       <SidebarHeader>
         <SystemBrand />
       </SidebarHeader>
