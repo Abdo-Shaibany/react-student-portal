@@ -1,7 +1,3 @@
-
-
-Here is a simple and awesome README in Arabic for your project:
-
 # مشروع البوابة الطلابية
 
 هذا المشروع هو بوابة إلكترونية للطلاب، تم إنشاؤه باستخدام تقنيات الويب الحديثة مثل React و TypeScript و Vite.

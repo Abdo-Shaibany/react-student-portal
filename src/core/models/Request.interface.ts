@@ -1,3 +1,4 @@
+import { RequestStatus } from "../enum/requestStatus"
 import { Department } from "./Department.interface"
 import { User } from "./User.interface"
 
@@ -9,11 +10,12 @@ export interface Request {
     phone: string
     message: string
     createdAt: string
+    createdAtDate: string
     status: RequestStatus
     departmentId: string
-    assignedToId: string
+    assignedToId?: string
     department: Department
-    assignedTo: User
+    assignedTo?: User
     files: { name: string; type: 'pdf' | 'image', url: string }[]
     statusHistory: {
         status: RequestStatus
@@ -31,8 +33,6 @@ export interface RequestForm {
     fileUpload?: FileList;
 }
 
-export enum RequestStatus {
-    PENDING = "pending",
-    IN_PROGRESS = "inProgress",
-    COMPLETED = "completed",
-}
+export interface RequestDailyCount { date: string, count: number }
+
+export interface RequestTodayReport { pending: number, late: number }

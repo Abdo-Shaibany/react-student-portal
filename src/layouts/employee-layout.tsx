@@ -19,7 +19,6 @@ import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { ToggleLanguage } from "@/components/toggle-language"
 
-// TODO: handle language
 export default function EmployeeLayout() {
   const currentPath = window.location.pathname
   const [breadcrumbItems, setBreadcrumbItems] = useState(getBreadcrumbItems(currentPath));
@@ -36,6 +35,8 @@ export default function EmployeeLayout() {
 
     handleUrlChange();
   }, [location]);
+
+
 
   return (
     <SidebarProvider>

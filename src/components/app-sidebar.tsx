@@ -1,11 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react"
-
-import {
-  Home,
-  LayoutDashboard,
-  Users,
-  FileText,
-} from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -17,45 +11,58 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { useTranslation } from "react-i18next"
+import { getUser, isAdmin } from "@/core/services/loginService"
+import { useEffect, useState } from "react"
+import { getRequestTodayReport } from "@/core/services/requestService"
+import { toast } from "sonner"
+import { User } from "@/core/models/User.interface"
+import { sidebarPages } from "@/core/enum/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const side = localStorage.getItem('i18nextLng') === 'ar' ? 'right' : 'left';
 
   const { t } = useTranslation();
 
-  const data = {
-    user: {
-      name: "shadcn",
-      email: "7123456789",
-      avatar: "/avatars/shadcn.jpg",
-    },
-    navMain: [
-      {
-        title: t('navMain.dashboard'),
-        url: "/admin-portal/dashboard",
-        icon: Home,
-      },
-      {
-        title: t('navMain.departments'),
-        url: "/admin-portal/departments",
-        icon: LayoutDashboard,
-      },
-      {
-        title: t('navMain.userManagement'),
-        url: "/admin-portal/users",
-        icon: Users,
-      },
-      {
-        title: t('navMain.studentRequests'),
-        url: "/admin-portal/requests",
-        icon: FileText,
-        badge: {
-          new: 5,
-          late: 2
-        }
+  const [pages, setPages] = useState(sidebarPages(t).filter(page => page.isAdmin === isAdmin()));
+
+
+  const [user, setUser] = useState<User>({
+    phone: '',
+    departmentId: "",
+    name: "",
+    totalRequests: 0,
+    isAdmin: false,
+  });
+
+  useEffect(() => {
+    const handleAsyncTodayReport = async () => {
+      try {
+        const response = await getRequestTodayReport();
+        setPages(sidebarPages(t).filter(page => {
+          if(isAdmin()) return true;
+          return page.isAdmin !== true;
+        }).map(page => {
+          if (page.title === t('navMain.studentRequests')) {
+            return {
+              ...page,
+              badge: {
+                late: response.late,
+                new: response.pending
+              }
+            }
+          }
+          return page
+        }));
+      } catch (error: any) {
+        toast.error(error.message);
       }
-    ]
-  }
+    }
+    
+    setUser(getUser());
+
+    handleAsyncTodayReport();
+  }, [t])
+
 
   return (
     <Sidebar collapsible="offcanvas" side={side} {...props}>
@@ -63,10 +70,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SystemBrand />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={pages} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

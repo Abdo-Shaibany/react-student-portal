@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import {
   Table,
@@ -23,55 +24,96 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { departmentsList } from "@/api/mock/departments";
-import { usersList } from "@/api/mock/users";
-import { Request } from "@/core/models/Request.interface";
-import { requestsList } from "@/api/mock/requests";
+import { Request, RequestDailyCount } from "@/core/models/Request.interface";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { isAdmin } from "@/core/services/loginService";
+import { fetchRequestCountsDaily, fetchRequests } from "@/core/services/requestService";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Department } from "@/core/models/Department.interface";
+import { User } from "@/core/models/User.interface";
+import { fetchUsers } from "@/core/services/usersService";
+import { fetchDepartments } from "@/core/services/departmentService";
+import { RequestStatus } from "@/core/enum/requestStatus";
 
 export function RequestsPage() {
-  const [requests] = useState<Request[]>(requestsList);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [dateOrder, setDateOrder] = useState<"oldest" | "newest">("newest");
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [statusFilter, setStatusFilter] = useState<RequestStatus>(RequestStatus.ALL);
+  const [dateOrder, setDateOrder] = useState<"desc" | "asc">("asc");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [employeeFilter, setEmployeeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  // Mock chart data
-  const chartData = [
-    { date: "2024-03-01", count: 12 },
-    { date: "2024-03-02", count: 18 },
-    { date: "2024-03-03", count: 9 },
-  ];
+  const admin = isAdmin();
 
-  // Use static lists for departments and users
-  const departments = departmentsList;
-  const users = usersList;
+  const [chartData, setChartData] = useState<RequestDailyCount[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
-  // Filter and sort requests
-  const filteredRequests = requests
-    .filter(request => {
-      const matchesStatus = statusFilter === "all" || request.status === statusFilter;
-      const matchesSearch = [
-        request.requestNumber,
-        request.studentName,
-        request.phone,
-      ].some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesStatus && request.department && request.assignedTo && matchesSearch;
-    })
-    .sort((a, b) =>
-      dateOrder === "newest"
-        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+  useEffect(() => {
+    if(!admin) return;
+    const fetchChartData = async () => {
+      try {
+        setLoading(true)
+        const report = await fetchRequestCountsDaily();
+        setChartData(report);
+
+        const _users = await fetchUsers();
+        setUsers(_users);
+
+        const _department = await fetchDepartments();
+        setDepartments(_department);
+
+        setLoading(false)
+      } catch (error: any) {
+        toast.error(error.message || t("error.fetchUsers"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChartData();
+  }, [admin, t]);
+
+
+
+  useEffect(() => {
+    const fetchFilteredRequests = async () => {
+      try {
+        setLoading(true);
+        const values = await fetchRequests({selectedDepartment: departmentFilter, status: statusFilter, searchQuery, dateOrder, assignToId: employeeFilter});
+        setRequests(values.data);
+      } catch (error: any) {
+        toast.error(error.message || t("error.fetchRequests"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredRequests();
+  }, [departmentFilter, statusFilter, searchQuery, dateOrder, t, employeeFilter]);
+
+    if (loading) {
+      return (
+          <div className="p-6 space-y-4">
+              <Skeleton className="h-10 w-[300px]" />
+              <div className="space-y-2">
+                  {[...Array(5)].map((_, i) => (
+                      <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+              </div>
+          </div>
+      )
+    }
 
   return (
     <div className="p-6 space-y-6">
       {/* Chart Section */}
-      <div className="bg-background p-4 rounded-lg border">
+      {admin && <div className="bg-background p-4 rounded-lg border">
         <h2 className="text-lg font-semibold mb-4">
           {t("chart.requestsPerDay")}
         </h2>
@@ -86,33 +128,41 @@ export function RequestsPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div>}
 
       {/* Filters Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+      <div className="flex flex-wrap gap-4">
+
+        <Input
+          placeholder={t("search.requests")}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="md:flex-1 w-full"
+        />
+
+        <Select value={statusFilter} onValueChange={(value: RequestStatus) => setStatusFilter(value)}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.status")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{t("status.all")}</SelectItem>
-            <SelectItem value="pending">{t("status.pending")}</SelectItem>
-            <SelectItem value="in-progress">{t("status.inProgress")}</SelectItem>
-            <SelectItem value="completed">{t("status.completed")}</SelectItem>
+            <SelectItem value={RequestStatus.ALL}>{t("status.all")}</SelectItem>
+            <SelectItem value={RequestStatus.PENDING}>{t(`status.${RequestStatus.PENDING}`)}</SelectItem>
+            <SelectItem value={RequestStatus.IN_PROGRESS}>{t(`status.${RequestStatus.IN_PROGRESS}`)}</SelectItem>
+            <SelectItem value={RequestStatus.COMPLETED}>{t(`status.${RequestStatus.COMPLETED}`)}</SelectItem>
           </SelectContent>
         </Select>
 
-        <Select value={dateOrder} onValueChange={(value) => setDateOrder(value as "oldest" | "newest")}>
+        <Select value={dateOrder} onValueChange={(value) => setDateOrder(value as "asc" | "desc")}>
           <SelectTrigger>
             <SelectValue placeholder={t("sort.date")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">{t("sort.newestFirst")}</SelectItem>
-            <SelectItem value="oldest">{t("sort.oldestFirst")}</SelectItem>
+            <SelectItem value="desc">{t("sort.newestFirst")}</SelectItem>
+            <SelectItem value="asc">{t("sort.oldestFirst")}</SelectItem>
           </SelectContent>
         </Select>
 
-        <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+        {admin && <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.department")} />
           </SelectTrigger>
@@ -124,27 +174,22 @@ export function RequestsPage() {
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select>}
 
-        <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
+        {admin && <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
           <SelectTrigger>
             <SelectValue placeholder={t("filter.employee")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("employee.all")}</SelectItem>
             {users.map((emp) => (
-              <SelectItem key={emp.id} value={emp.id}>
+              <SelectItem key={emp.id} value={emp.id!}>
                 {emp.name}
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select>}
 
-        <Input
-          placeholder={t("search.requests")}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
       </div>
 
       {/* Table Section */}
@@ -164,7 +209,7 @@ export function RequestsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredRequests.map((request) => (
+            {requests.map((request) => (
               <TableRow key={request.id}>
                 <TableCell>{request.requestNumber}</TableCell>
                 <TableCell>{request.studentName}</TableCell>
@@ -175,23 +220,22 @@ export function RequestsPage() {
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      request.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : request.status === "inProgress"
+                    className={`px-2 py-1 rounded-full text-xs ${request.status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : request.status === "inProgress"
                         ? "bg-blue-100 text-blue-800"
                         : "bg-green-100 text-green-800"
-                    }`}
+                      }`}
                   >
                     {request.status === "pending"
                       ? t("status.pending")
                       : request.status === "inProgress"
-                      ? t("status.inProgress")
-                      : t("status.completed")}
+                        ? t("status.inProgress")
+                        : t("status.completed")}
                   </span>
                 </TableCell>
                 <TableCell>{request.department.name}</TableCell>
-                <TableCell>{request.assignedTo.name}</TableCell>
+                <TableCell>{request.assignedTo?.name}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>

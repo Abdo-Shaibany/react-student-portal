@@ -1,107 +1,81 @@
-import { departmentsList } from "@/api/mock/departments";
-import { requestsList } from "@/api/mock/requests";
+// src/services/departmentService.ts
 import { Department, DepartmentReport } from "@/core/models/Department.interface";
 
-export function fetchDepartments(order?: string, searchQuery?: string, pageSize?: number, page?: number): Promise<Department[]> {
-    return new Promise((resolve, reject) => {
-        let filteredDepartments = departmentsList;
+const BASE_URL = "http://localhost:3000/api";
 
-
-        if (searchQuery)
-            filteredDepartments = filteredDepartments.filter(department => department.name.toLowerCase().includes(searchQuery.toLowerCase()))
-
-        if (order)
-            filteredDepartments = filteredDepartments.sort((a, b) => order === "asc" ? a.totalRequests! - b.totalRequests! : b.totalRequests! - a.totalRequests!);
-
-        if (pageSize && page)
-            filteredDepartments = filteredDepartments.slice((page - 1) * pageSize, page * pageSize);
-
-        setTimeout(() => {
-            resolve(filteredDepartments);
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to fetch departments"));
-        }, 200);
-    });
+function getAuthHeaders() {
+    const token = localStorage.getItem("token") || "";
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    };
 }
 
-export function deleteDepartmentById(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const index = departmentsList.findIndex(department => department.id === id);
+export async function fetchDepartments(
+    order?: string,
+    searchQuery?: string,
+    pageSize?: number,
+    page?: number
+): Promise<Department[]> {
+    const params = new URLSearchParams();
+    if (order) params.append("order", order);
+    if (searchQuery) params.append("search", searchQuery);
+    if (pageSize) params.append("pageSize", String(pageSize));
+    if (page) params.append("page", String(page));
 
-        if (index < 0) {
-            reject(new Error(`Department with id ${id} not found.`));
-        }
-
-        departmentsList.splice(index, 1);
-
-        setTimeout(() => {
-            resolve();
-        }, 200);
+    const response = await fetch(`${BASE_URL}/departments?${params.toString()}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
     });
+    if (!response.ok) {
+        throw new Error("Failed to fetch departments");
+    }
+    return await response.json();
 }
 
-export function createDepartment(department: Department): Promise<Department> {
-    return new Promise((resolve, reject) => {
-        const newDepartment = {
-            id: (departmentsList.length + 1).toString(),
-            name: department.name,
-            totalRequests: 0,
-        };
-
-        departmentsList.push(newDepartment);
-
-        setTimeout(() => {
-            resolve(newDepartment);
-
-            reject("hello");
-        }, 200);
+export async function deleteDepartmentById(id: string): Promise<void> {
+    const response = await fetch(`${BASE_URL}/departments/${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
     });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete department");
+    }
+    return;
 }
 
-export function updateDepartment(input: Department): Promise<Department> {
-    return new Promise((resolve, reject) => {
-        const index = departmentsList.findIndex(department => department.id === input.id);
-
-        if (index < 0) {
-            reject(new Error(`Department with id ${input.id} not found.`));
-        }
-
-        const updatedDepartment = {
-            ...departmentsList[index],
-            ...input,
-        };
-
-        departmentsList[index] = updatedDepartment;
-
-        setTimeout(() => {
-            resolve(updatedDepartment);
-        }, 200);
+export async function createDepartment(department: Department): Promise<Department> {
+    const response = await fetch(`${BASE_URL}/departments`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(department),
     });
+    if (!response.ok) {
+        throw new Error("Failed to create department");
+    }
+    return await response.json();
 }
 
-export function fetchDepartmentsReport(): Promise<{ data: DepartmentReport[] }> {
-    return new Promise((resolve, reject) => {
-        // Simulate a network delay of 2 seconds
-        setTimeout(() => {
-            // Simulate success by returning the departments list
-            const departmentsReport: DepartmentReport[] = departmentsList.map(department => {
-                const completed = requestsList.filter(request => request.department.id === department.id && request.status === "completed").length
-                const today = new Date().toISOString().split('T')[0]
-                const pending = requestsList.filter(request => request.department.id === department.id && request.status === "pending" && request.createdAt.split('T')[0] === today).length
-                const late = requestsList.filter(request => request.department.id === department.id && request.status === "pending" && request.createdAt.split('T')[0] < today).length
-                return {
-                    name: department.name,
-                    completed,
-                    pending,
-                    late,
-                }
-            })
-
-            resolve({ data: departmentsReport });
-
-            // Uncomment below to simulate an error:
-            reject(new Error("Failed to fetch departments"));
-        }, 2000);
+export async function updateDepartment(department: Department): Promise<Department> {
+    const response = await fetch(`${BASE_URL}/departments/${department.id}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(department),
     });
+    if (!response.ok) {
+        throw new Error("Failed to update department");
+    }
+    return await response.json();
+}
+
+export async function fetchDepartmentsReport(): Promise<DepartmentReport[]> {
+    const response = await fetch(`${BASE_URL}/departments/report`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to fetch departments report");
+    }
+    return await response.json();
 }

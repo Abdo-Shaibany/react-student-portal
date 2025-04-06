@@ -24,39 +24,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { usersList } from "@/api/mock/users";
 import { User, UserFormData } from "@/core/models/User.interface";
-import { departmentsList } from "@/api/mock/departments";
 import { UserForm } from "./UserForm";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { createUser, deleteUser, fetchUsers, updateUser } from "@/core/services/usersService";
+import { fetchDepartments } from "@/core/services/departmentService";
+import { Department } from "@/core/models/Department.interface";
+import ConfirmationModal from '@/components/confirm-deletion';
 
 export function UsersPage() {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<User[]>(usersList);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState<Department[]>([]);
 
-  // Simulate fetching users from the backend with search and order
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
   useEffect(() => {
-    setLoading(true);
-    const fetchUsers = async () => {
+    const getUsers = async () => {
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const filtered = usersList
-          .filter((user) =>
-            user.name.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-          .sort((a, b) =>
-            sortOrder === "asc"
-              ? a.totalRequests - b.totalRequests
-              : b.totalRequests - a.totalRequests
-          );
+        setLoading(true)
+        const filtered = await fetchUsers(searchQuery, sortOrder);
         setUsers(filtered);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchUsers"));
@@ -64,25 +59,39 @@ export function UsersPage() {
         setLoading(false);
       }
     };
-    fetchUsers();
+    getUsers();
   }, [searchQuery, sortOrder, t]);
 
-  // Handle create and update
-  const handleSubmit = (values: UserFormData) => {
+  useEffect(() => {
+    const getDeprtments = async () => {
+      try {
+        setLoading(true);
+        const deps = await fetchDepartments();
+        setDepartments(deps);
+      } catch (error: any) {
+        toast.error(error.message || t("error.submitUser"));
+      } finally {
+        setLoading(false);
+        setIsDialogOpen(false);
+      }
+    }
+
+    getDeprtments();
+  }, [t]);
+
+  const handleSubmit = async (values: UserFormData) => {
     setLoading(true);
     try {
       if (isEditMode && selectedUser) {
-        setUsers((prev) =>
-          prev.map((user) => (user.id === selectedUser.id ? { ...user, ...values } : user))
-        );
+        await updateUser(values.id!, values);
         toast.success(t("success.userUpdated"));
       } else {
-        setUsers((prev) => [
-          ...prev,
-          { ...values, id: (prev.length + 1).toString(), totalRequests: 0 },
-        ]);
+        await createUser(values);
         toast.success(t("success.userCreated"));
       }
+
+      const filtered = await fetchUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.submitUser"));
     } finally {
@@ -91,12 +100,24 @@ export function UsersPage() {
     }
   };
 
+  const handleDeleteClick = (id: string) => {
+    setSelectedUserId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
+    setSelectedUserId(null);
+  };
+
   // Handle delete
-  const handleDelete = (id: string) => {
+  const handleConfirmDelete = async () => {
     setLoading(true);
     try {
-      setUsers((prev) => prev.filter((user) => user.id !== id));
+      await deleteUser(selectedUserId!);
       toast.success(t("success.userDeleted"));
+      const filtered = await fetchUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.deleteUser"));
     } finally {
@@ -104,13 +125,11 @@ export function UsersPage() {
     }
   };
 
-  const filteredUsers = users;
-
   return (
     <div className="p-6 space-y-4">
       {/* Header with Search and Create Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <Input
+        <Input
           placeholder={t("form.searchUsers")}
           className="max-w-xs"
           value={searchQuery}
@@ -135,7 +154,7 @@ export function UsersPage() {
             </DialogHeader>
             <UserForm
               user={selectedUser}
-              departments={departmentsList}
+              departments={departments}
               onSubmit={handleSubmit}
             />
           </DialogContent>
@@ -166,7 +185,7 @@ export function UsersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.phone}</TableCell>
@@ -189,7 +208,7 @@ export function UsersPage() {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-red-600"
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => handleDeleteClick(user.id!)}
                       >
                         {t("form.delete")}
                       </DropdownMenuItem>
@@ -203,11 +222,17 @@ export function UsersPage() {
       )}
 
       {/* Empty State */}
-      {filteredUsers.length === 0 && (
+      {users.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
           {t("form.noUsersFound")}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 }
