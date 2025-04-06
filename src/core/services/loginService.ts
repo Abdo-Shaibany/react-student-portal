@@ -1,8 +1,8 @@
 import { LoginFormData } from "@/core/models/LoginForm.interface";
 import { User } from "@/core/models/User.interface";
 import { Base64 } from 'js-base64';
+import { BASE_URL } from "./api";
 
-const BASE_URL = "http://localhost:3000/api";
 
 export async function submitLoginRequest(formData: LoginFormData): Promise<User> {
     const response = await fetch(`${BASE_URL}/auth/login`, {

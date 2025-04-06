@@ -1,7 +1,7 @@
 // src/services/userService.ts
 import { User, UserFormData } from "@/core/models/User.interface";
+import { BASE_URL } from "./api";
 
-const BASE_URL = "http://localhost:3000/api";
 
 function getAuthHeaders() {
     const token = localStorage.getItem("token") || "";

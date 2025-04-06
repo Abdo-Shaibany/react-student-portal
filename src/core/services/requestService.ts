@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, RequestDailyCount, RequestTodayReport } from "@/core/models/Request.interface";
 import { RequestStatus } from "@/core/enum/requestStatus";
+import { BASE_URL } from "./api";
 
-const BASE_URL = "http://localhost:3000/api";
 
 function getAuthHeaders() {
     const token = localStorage.getItem("token") || "";

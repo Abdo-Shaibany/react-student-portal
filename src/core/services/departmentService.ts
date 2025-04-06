@@ -1,7 +1,7 @@
 // src/services/departmentService.ts
 import { Department, DepartmentReport } from "@/core/models/Department.interface";
+import { BASE_URL } from "./api";
 
-const BASE_URL = "http://localhost:3000/api";
 
 function getAuthHeaders() {
     const token = localStorage.getItem("token") || "";
