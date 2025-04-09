@@ -4,10 +4,16 @@ import { RequestStatus } from "@/core/enum/requestStatus";
 import { BASE_URL } from "./api";
 
 
-function getAuthHeaders() {
+function getHeaders() {
+    return {
+        "Content-Type": "application/json",
+        ...getAuthHeader()
+    };
+}
+
+function getAuthHeader() {
     const token = localStorage.getItem("token") || "";
     return {
-        // "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
     };
 }
@@ -39,7 +45,7 @@ export async function fetchRequests(params: {
 
     const response = await fetch(`${BASE_URL}/requests?${queryParams.toString()}`, {
         method: "GET",
-        headers: getAuthHeaders(),
+        headers: getHeaders(),
     });
     if (!response.ok) {
         throw new Error("Failed to fetch requests");
@@ -50,7 +56,7 @@ export async function fetchRequests(params: {
 export async function fetchRequestCountsDaily(): Promise<RequestDailyCount[]> {
     const response = await fetch(`${BASE_URL}/requests/daily-count`, {
         method: "GET",
-        headers: getAuthHeaders(),
+        headers: getHeaders(),
     });
     if (!response.ok) {
         throw new Error("Failed to fetch request counts daily");
@@ -61,7 +67,7 @@ export async function fetchRequestCountsDaily(): Promise<RequestDailyCount[]> {
 export async function fetchRequestById(id: string): Promise<Request | undefined> {
     const response = await fetch(`${BASE_URL}/requests/${id}`, {
         method: "GET",
-        headers: getAuthHeaders(),
+        headers: getHeaders(),
     });
     if (!response.ok) {
         throw new Error("Failed to fetch request by id");
@@ -76,8 +82,8 @@ export async function updateRequestStatus(
 ): Promise<Request> {
     const response = await fetch(`${BASE_URL}/requests/${id}/status`, {
         method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ status, comment }),
+        headers: getHeaders(),
+        body: JSON.stringify({ status, comment: comment !== "" ? comment : null }),
     });
     if (!response.ok) {
         throw new Error("Failed to update request status");
@@ -88,7 +94,7 @@ export async function updateRequestStatus(
 export async function submitStudentRequest(formData: FormData): Promise<{ requestNumber: number }> {
     const response = await fetch(`${BASE_URL}/requests`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeader(),
         body: formData,
     });
 
@@ -101,7 +107,7 @@ export async function submitStudentRequest(formData: FormData): Promise<{ reques
 export async function getRequestTodayReport(): Promise<RequestTodayReport> {
     const response = await fetch(`${BASE_URL}/requests/today-report`, {
         method: "GET",
-        headers: getAuthHeaders(),
+        headers: getHeaders(),
     });
     if (!response.ok) {
         throw new Error("Failed to fetch today's report");

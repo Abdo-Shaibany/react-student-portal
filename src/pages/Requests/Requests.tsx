@@ -30,7 +30,7 @@ import { useTranslation } from "react-i18next";
 import { isAdmin } from "@/core/services/loginService";
 import { fetchRequestCountsDaily, fetchRequests } from "@/core/services/requestService";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+// import { Skeleton } from "@/components/ui/skeleton";
 import { Department } from "@/core/models/Department.interface";
 import { User } from "@/core/models/User.interface";
 import { fetchUsers } from "@/core/services/usersService";
@@ -43,10 +43,13 @@ export function RequestsPage() {
   const [dateOrder, setDateOrder] = useState<"desc" | "asc">("asc");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [employeeFilter, setEmployeeFilter] = useState("all");
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const admin = isAdmin();
 
@@ -58,7 +61,7 @@ export function RequestsPage() {
     if(!admin) return;
     const fetchChartData = async () => {
       try {
-        setLoading(true)
+        // setLoading(true)
         const report = await fetchRequestCountsDaily();
         setChartData(report);
 
@@ -68,11 +71,11 @@ export function RequestsPage() {
         const _department = await fetchDepartments();
         setDepartments(_department);
 
-        setLoading(false)
+        // setLoading(false)
       } catch (error: any) {
         toast.error(error.message || t("error.fetchUsers"));
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -84,31 +87,43 @@ export function RequestsPage() {
   useEffect(() => {
     const fetchFilteredRequests = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         const values = await fetchRequests({selectedDepartment: departmentFilter, status: statusFilter, searchQuery, dateOrder, assignToId: employeeFilter});
         setRequests(values.data);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchRequests"));
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
     fetchFilteredRequests();
-  }, [departmentFilter, statusFilter, searchQuery, dateOrder, t, employeeFilter]);
+  }, [departmentFilter, statusFilter, debouncedQuery, dateOrder, t, employeeFilter]);
 
-    if (loading) {
-      return (
-          <div className="p-6 space-y-4">
-              <Skeleton className="h-10 w-[300px]" />
-              <div className="space-y-2">
-                  {[...Array(5)].map((_, i) => (
-                      <Skeleton key={i} className="h-12 w-full" />
-                  ))}
-              </div>
-          </div>
-      )
-    }
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 600);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+    // if (loading) {
+    //   return (
+    //       <div className="p-6 space-y-4">
+    //           <Skeleton className="h-10 w-[300px]" />
+    //           <div className="space-y-2">
+    //               {[...Array(5)].map((_, i) => (
+    //                   <Skeleton key={i} className="h-12 w-full" />
+    //               ))}
+    //           </div>
+    //       </div>
+    //   )
+    // }
+
+
 
   return (
     <div className="p-6 space-y-6">
@@ -216,7 +231,7 @@ export function RequestsPage() {
                 <TableCell>{request.title}</TableCell>
                 <TableCell>{request.phone}</TableCell>
                 <TableCell>
-                  {new Date(request.createdAt).toLocaleDateString()}
+                  {new Date(request.createdAtDate).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
                   <span
