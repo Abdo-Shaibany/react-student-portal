@@ -26,5 +26,5 @@ export const sidebarPages = (t: TFunction<"translation", undefined>): SideBarIte
         url: "/admin-portal/requests",
         icon: FileText,
         isAdmin: false,
-    }
+    },
 ]

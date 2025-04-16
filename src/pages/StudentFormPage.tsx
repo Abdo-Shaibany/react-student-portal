@@ -191,6 +191,8 @@ export function StudentFormPage() {
             </div>
           )}
 
+          {t('instructions')}
+          
           {/* Submit Button */}
           <div className="pt-4">
             <Button

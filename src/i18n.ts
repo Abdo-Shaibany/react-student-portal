@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
+      instructions: "Student instructions: Your request will be processed within 24 hours after submission. Please check with the college.",
       welcome: "Welcome to Student Portal",
       student: "Student",
       student_description: "Submit your requests and track their progress",
@@ -192,6 +193,7 @@ const resources = {
   },
   ar: {
     translation: {
+      instructions: "تعليمات الطالب: سيتم معالجة طلبك في غضون 24 ساعة بعد إرسال طلبك.  ويرجى مراجعة الكلية ",
       welcome: "مرحباً بك في بوابة الطالب",
       student: "طالب",
       student_description: "أرسل طلباتك وتابع تقدمها",
@@ -206,8 +208,8 @@ const resources = {
       "712345678": "712345678",
       "Title": "العنوان",
       "Request Title": "عنوان الطلب",
-      "Department": "القسم",
-      "Select department": "اختر القسم",
+      "Department": "الجهة",
+      "Select department": "اختر الجهة",
       "Message": "الرسالة",
       "Type your message here": "اكتب رسالتك هنا",
       "Upload Files (PDFs & Images)": "رفع الملفات (PDF والصور)",
@@ -247,7 +249,7 @@ const resources = {
       },
       "navMain": {
         "dashboard": "لوحة القيادة",
-        "departments": "الأقسام",
+        "departments": "الجهات",
         "userManagement": "إدارة المستخدمين",
         "studentRequests": "طلبات الطلاب"
       },
@@ -275,8 +277,8 @@ const resources = {
         "fullName": "الاسم الكامل",
         "phone": "الهاتف",
         "password": "كلمة المرور",
-        "department": "القسم",
-        "selectDepartment": "اختر القسم",
+        "department": "الجهة",
+        "selectDepartment": "اختر الجهة",
         "createUser": "إنشاء مستخدم",
         "editUser": "تعديل المستخدم",
         "createNewUser": "إنشاء مستخدم جديد",

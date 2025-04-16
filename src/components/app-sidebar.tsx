@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next"
 import { getUser, isAdmin } from "@/core/services/loginService"
 import { useEffect, useState } from "react"
 import { getRequestTodayReport } from "@/core/services/requestService"
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { User } from "@/core/models/User.interface"
 import { sidebarPages } from "@/core/enum/sidebar"
 
