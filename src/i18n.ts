@@ -62,7 +62,8 @@ const resources = {
         "dashboard": "Dashboard",
         "departments": "Departments",
         "userManagement": "User Management",
-        "studentRequests": "Student Requests"
+        "studentRequests": "Student Requests",
+        "requestTypes": "Request Types"
       },
       'Search departments...': 'Search departments...',
       'Create Department': 'Create Department',
@@ -251,7 +252,8 @@ const resources = {
         "dashboard": "لوحة القيادة",
         "departments": "الجهات",
         "userManagement": "إدارة المستخدمين",
-        "studentRequests": "طلبات الطلاب"
+        "studentRequests": "طلبات الطلاب",
+        "requestTypes": "نوع الطلبات",
       },
       'Search departments...': 'ابحث عن الأقسام...',
       'Create Department': 'أنشئ قسم',

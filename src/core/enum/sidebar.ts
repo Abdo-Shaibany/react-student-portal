@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import { FileText, Home, LayoutDashboard, Users } from "lucide-react";
+import { FileText, Home, LayoutDashboard, Settings2, Users } from "lucide-react";
 import { SideBarItem } from "../models/sidebar";
 
 export const sidebarPages = (t: TFunction<"translation", undefined>): SideBarItem[] => [
@@ -13,6 +13,12 @@ export const sidebarPages = (t: TFunction<"translation", undefined>): SideBarIte
         title: t('navMain.departments'),
         url: "/admin-portal/departments",
         icon: LayoutDashboard,
+        isAdmin: true,
+    },
+    {
+        title: t('navMain.requestTypes'),
+        url: "/admin-portal/requestTypes",
+        icon: Settings2,
         isAdmin: true,
     },
     {
