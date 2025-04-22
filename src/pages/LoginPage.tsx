@@ -52,7 +52,7 @@ export function EmployeeLoginPage() {
             </Label>
             <Input
               id="phone"
-              placeholder="712345678"
+              placeholder={t("phone")}
               {...register("phone", YemenPhoneValidations)}
             />
             {errors.phone && (

@@ -231,7 +231,8 @@ export function RequestsPage() {
                 <TableCell>{request.title}</TableCell>
                 <TableCell>{request.phone}</TableCell>
                 <TableCell>
-                  {new Date(request.createdAtDate).toLocaleDateString()}
+                  {/* {new Date(request.createdAtDate).toLocaleDateString()} */}
+                  {request.createdAtDate}
                 </TableCell>
                 <TableCell>
                   <span
