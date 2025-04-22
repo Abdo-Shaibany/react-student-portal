@@ -10,6 +10,7 @@ import { RequestsPage } from '@/pages/Requests/Requests';
 import { RequestViewPage } from '@/pages/Requests/ViewRequest';
 import { isAdmin, isAuth } from '@/core/services/loginService';
 import { AppRoutes } from '@/core/enum/routes';
+import { RequestTypesPage } from '@/pages/RequestsTypes/RequestsTypes';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (!isAuth()) {
@@ -43,6 +44,7 @@ const AppRoutesComponent = () => (
         <Route path={AppRoutes.DASHBOARD} element={<AlreadyAdmin><DashboardPage /></AlreadyAdmin>} />
         <Route path={AppRoutes.DEPARTMENTS} element={<AlreadyAdmin><DepartmentsPage /></AlreadyAdmin>} />
         <Route path={AppRoutes.USERS} element={<AlreadyAdmin><UsersPage /></AlreadyAdmin>} />
+        <Route path={AppRoutes.REQUESTS_TYPES} element={<AlreadyAdmin><RequestTypesPage /></AlreadyAdmin>} />
         <Route path={AppRoutes.REQUESTS} element={<RequireAuth><RequestsPage /></RequireAuth>} />
         <Route path={AppRoutes.REQUEST_VIEW} element={<RequireAuth><RequestViewPage /></RequireAuth>} />
       </Route>

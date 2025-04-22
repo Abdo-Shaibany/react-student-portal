@@ -7,6 +7,7 @@ export const getBreadcrumbItems = (pathname: string) => {
         'admin-portal': 'Admin Portal',
         dashboard: 'Dashboard',
         departments: 'Departments',
+        requestTypes: 'Request Types',
         'users': 'User Management',
         'requests': 'Student Requests',
     }
@@ -15,6 +16,7 @@ export const getBreadcrumbItems = (pathname: string) => {
         'admin-portal': 'الوحده الادارية',
         dashboard: 'لوحة التحكم',
         departments: 'الادارات',
+        requestTypes: 'نوع الطلبات',
         'users': 'ادارة المستخدمين',
         'requests': 'طلبات الطلاب',
     }
