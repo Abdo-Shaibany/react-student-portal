@@ -25,8 +25,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router-dom"
-import { logout } from "@/core/services/loginService"
-import { User } from "@/core/models/User.interface"
+import { logout, submitChangePassword } from "@/core/services/loginService"
+import { ChangePasswordFormData, User } from "@/core/models/User.interface"
+import { ChangePasswordModal } from "@/pages/ChangePasswordForm"
 
 export function NavUser({
   user,
@@ -35,7 +36,17 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  
+
+  const handlePasswordChange = async (data: ChangePasswordFormData) => {
+    try {
+      await submitChangePassword(data);
+      logout(navigate);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      alert(error.message || "Failed to change password")
+    }
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -75,6 +86,9 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <ChangePasswordModal
+              onSubmit={handlePasswordChange}
+            />
             <DropdownMenuItem onClick={() => logout(navigate)} >
               <LogOut />
               Log out

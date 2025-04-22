@@ -18,3 +18,9 @@ export interface UserFormData {
     password?: string;
     departmentId: string;
 }
+
+export interface ChangePasswordFormData {
+    currentPassword: string
+    newPassword: string
+    confirmNewPassword: string
+}

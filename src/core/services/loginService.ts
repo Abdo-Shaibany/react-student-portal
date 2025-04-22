@@ -1,5 +1,5 @@
 import { LoginFormData } from "@/core/models/LoginForm.interface";
-import { User } from "@/core/models/User.interface";
+import { ChangePasswordFormData, User } from "@/core/models/User.interface";
 import { Base64 } from 'js-base64';
 import { BASE_URL } from "./api";
 
@@ -20,6 +20,31 @@ export async function submitLoginRequest(formData: LoginFormData): Promise<User>
 
     localStorage.setItem("token", data.token);
     return data.user;
+}
+
+export async function submitChangePassword(
+    formData: ChangePasswordFormData
+): Promise<void> {
+    const token = localStorage.getItem("token")
+    if (!token) {
+        throw new Error("Not authenticated")
+    }
+
+    const response = await fetch(`${BASE_URL}/auth/change-password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+    })
+
+    if (!response.ok) {
+        // try to pull error message from API
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || "Failed to change password")
+    }
+    // no return value on success
 }
 
 export function logout(navigate: (path: string) => void): void {
