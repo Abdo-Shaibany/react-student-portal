@@ -19,6 +19,8 @@ import { useTranslation } from "react-i18next";
 import { fetchDepartments } from "@/core/services/departmentService";
 import { Department } from "@/core/models/Department.interface";
 import { submitStudentRequest } from "@/core/services/requestService";
+import { fetchRequestTypes } from "@/core/services/requestTypesService";
+import { RequestType } from "@/core/models/RequestType.interface";
 
 export function StudentFormPage() {
   const {
@@ -26,6 +28,7 @@ export function StudentFormPage() {
     handleSubmit,
     formState: { errors, isValid },
     reset,
+    watch, 
   } = useForm<RequestForm>({
     mode: "onChange",
   });
@@ -34,8 +37,10 @@ export function StudentFormPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
   const [requestNumber, setRequestNumber] = useState<number | null>(null);
   const { t } = useTranslation();
+
 
   const onSubmit = async (data: RequestForm) => {
     setErrorMessage("");
@@ -44,8 +49,8 @@ export function StudentFormPage() {
       const formData = new FormData();
       formData.append('fullName', data.fullName);
       formData.append('phone', data.phone);
-      formData.append('title', data.title);
       formData.append('departmentId', data.departmentId);
+      formData.append('requestTypeId', data.requestTypeId);
       formData.append('message', data.message);
 
       if (data.fileUpload && data.fileUpload.length > 0) {
@@ -69,15 +74,20 @@ export function StudentFormPage() {
     const fetchAndSetDepartments = async () => {
       const values = await fetchDepartments();
       setDepartments(values);
+
+      const requestTypes = await fetchRequestTypes();
+      setRequestTypes(requestTypes)
     };
     fetchAndSetDepartments();
   }, []);
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="max-w-3xl w-full p-6 shadow-md">
         <h1 className="text-2xl font-bold mb-6">{t('Student Request Form')}</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
           {/* Full Name */}
           <div>
             <Label htmlFor="fullName" className="block mb-1">
@@ -112,22 +122,6 @@ export function StudentFormPage() {
             )}
           </div>
 
-          {/* Title */}
-          <div>
-            <Label htmlFor="title" className="block mb-1">
-              {t('Title')}
-            </Label>
-            <Input
-              id="title"
-              placeholder={t('Request Title')}
-              {...register("title", { required: t('Title is required') })}
-            />
-            {errors.title && (
-              <span className="text-red-500 text-sm">
-                {errors.title.message}
-              </span>
-            )}
-          </div>
 
           {/* Department Dropdown */}
           <div>
@@ -141,6 +135,30 @@ export function StudentFormPage() {
             >
               <option value="">{t('Select department')}</option>
               {departments.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+            {errors.departmentId && (
+              <span className="text-red-500 text-sm">
+                {errors.departmentId.message}
+              </span>
+            )}
+          </div>
+
+          {/* Request Type Dropdown */}
+          <div>
+            <Label htmlFor="requestTypeId" className="block mb-1">
+              {t('Request Type')}
+            </Label>
+            <select
+              id="requestTypeId"
+              className="border border-gray-300 rounded p-2 w-full"
+              {...register("requestTypeId", { required: t('Request Type is required') })}
+            >
+              <option value="">{t("Select request type")}</option>
+              {requestTypes.filter((rt) => rt.departmentId === watch('departmentId')).map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.name}
                 </option>

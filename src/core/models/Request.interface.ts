@@ -1,5 +1,6 @@
 import { RequestStatus } from "../enum/requestStatus"
 import { Department } from "./Department.interface"
+import { RequestType } from "./RequestType.interface"
 import { User } from "./User.interface"
 
 export interface Request {
@@ -15,6 +16,7 @@ export interface Request {
     departmentId: string
     assignedToId?: string
     department: Department
+    RequestType: RequestType
     assignedTo?: User
     files: { name: string; type: 'pdf' | 'image', url: string }[]
     statusHistory: {
@@ -27,8 +29,8 @@ export interface Request {
 export interface RequestForm {
     fullName: string;
     phone: string;
-    title: string;
     departmentId: string;
+    requestTypeId: string;
     message: string;
     fileUpload?: FileList;
 }

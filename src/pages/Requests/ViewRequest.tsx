@@ -194,7 +194,7 @@ export function RequestViewPage() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-4">
-              <p>{request.title}</p>
+              <p>{request.RequestType?.name}</p>
             </AccordionContent>
           </AccordionItem>
 
