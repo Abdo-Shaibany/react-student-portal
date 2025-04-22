@@ -11,7 +11,7 @@ export interface RequestTypeReport {
     late: number;
 }
 
-export interface RequestForm {
+export interface RequestTypeForm {
     id: string;
     name: string;
 }

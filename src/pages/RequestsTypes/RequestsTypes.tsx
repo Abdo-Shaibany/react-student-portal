@@ -28,9 +28,9 @@ import { MoreHorizontal } from "lucide-react"
 import { Department } from "@/core/models/Department.interface"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RequestTypeForm } from "./RequestTypeForm"
-import { createDepartment, deleteDepartmentById, fetchDepartments, updateDepartment } from "@/core/services/departmentService"
 import { t } from "i18next"
 import ConfirmationModal from "@/components/confirm-deletion"
+import { createRequestType, deleteRequestTypeById, fetchRequestTypes, updateRequestType } from "@/core/services/requestTypesService"
 
 export function RequestTypesPage() {
   const [types, setTypes] = useState<Department[]>([])
@@ -47,21 +47,21 @@ export function RequestTypesPage() {
 
   const fetchAndSetRequestTypes = async () => {
     setLoading(true);
-    const values = await fetchDepartments(sortOrder, searchQuery, pageSize, page);
+    const values = await fetchRequestTypes(sortOrder, searchQuery, pageSize, page);
     setTypes(values);
     setLoading(false);
   };
 
   useEffect(() => {
-    const fetchAndSetDepartments = async () => {
+    const fetchAndSetRequestsTypes = async () => {
       setLoading(true);
-      const values = await fetchDepartments(sortOrder, searchQuery, pageSize, page);
+      const values = await fetchRequestTypes(sortOrder, searchQuery, pageSize, page);
       setTypes(values);
       setLoading(false);
     };
 
     try {
-      fetchAndSetDepartments();
+      fetchAndSetRequestsTypes();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false);
@@ -70,24 +70,24 @@ export function RequestTypesPage() {
   }, [sortOrder, searchQuery, pageSize, page])
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectDepartmentId, setDepartmentId] = useState<string | null>(null);
+  const [selectRequestTypeId, setRequestTypeId] = useState<string | null>(null);
 
 
   const handleDeleteClick = (id: string) => {
-    setDepartmentId(id);
+    setRequestTypeId(id);
     setIsModalOpen(true);
   };
 
   const handleCancelDelete = () => {
     setIsModalOpen(false);
-    setDepartmentId(null);
+    setRequestTypeId(null);
   };
 
   // Handle delete
   const handleConfirmDelete = async () => {
     try {
       setLoading(true);
-      await deleteDepartmentById(selectDepartmentId!);
+      await deleteRequestTypeById(selectRequestTypeId!);
       fetchAndSetRequestTypes();
       setLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,19 +98,19 @@ export function RequestTypesPage() {
   };
 
   const handleSubmit = (values: { name: string }) => {
-    const updateOrcreateDepartment = async () => {
+    const updateOrcreateRequestType = async () => {
       setLoading(true);
       if (isEditMode && selectedType) {
-        await updateDepartment({ ...selectedType, name: values.name });
+        await updateRequestType({ ...selectedType, name: values.name });
       } else {
-        await createDepartment({ name: values.name });
+        await createRequestType({ name: values.name });
       }
       fetchAndSetRequestTypes();
       setLoading(false);
     }
 
     try {
-      updateOrcreateDepartment();
+      updateOrcreateRequestType();
       setIsDialogOpen(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -137,7 +137,7 @@ export function RequestTypesPage() {
       {/* Header with Search and Create Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <Input
-          placeholder={t('Search departments...')}
+          placeholder={t('Search requests types...')}
           className="max-w-xs"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -150,26 +150,26 @@ export function RequestTypesPage() {
                 setSelectedType(null);
               }}
             >
-              {t('Create Department')}
+              {t('Create Request Type')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {isEditMode ? t('Edit Department') : t('Create New Department')}
+                {isEditMode ? t('Edit Request Type') : t('Create New Request Type')}
               </DialogTitle>
             </DialogHeader>
             <DialogDescription className="sr-only">
               {isEditMode
-                ? t('Modify department details')
-                : t('Add a new department to the system')}
+                ? t('Modify request type details')
+                : t('Add a new request type to the system')}
             </DialogDescription>
             <RequestTypeForm
-              department={selectedType}
+              requestType={selectedType}
               onSubmit={(values) => {
                 handleSubmit(values);
                 toast.success(
-                  t(`Department ${isEditMode ? 'updated' : 'created'}!`)
+                  t(`Request Type ${isEditMode ? 'updated' : 'created'}!`)
                 );
               }}
             />
@@ -181,7 +181,7 @@ export function RequestTypesPage() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t('Department Name')}</TableHead>
+            <TableHead>{t('Request Type Name')}</TableHead>
             <TableHead>
               <Button
                 variant="ghost"
@@ -253,7 +253,7 @@ export function RequestTypesPage() {
       {/* Empty State */}
       {types.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          {t('No departments found')}
+          {t('No request types found')}
         </div>
       )}
 

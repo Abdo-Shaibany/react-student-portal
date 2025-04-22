@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Department, DepartmentForm as FormData } from "@/core/models/Department.interface"
+import { RequestTypeForm as FormData} from "@/core/models/RequestType.interface"
 import { useTranslation } from "react-i18next";
 import { useForm, } from "react-hook-form";
+import { RequestType } from "@/core/models/RequestType.interface";
 
 export function RequestTypeForm({
-  department,
+  requestType,
   onSubmit,
 }: {
-  department?: Department | null
+  requestType?: RequestType | null
   onSubmit: (values: FormData) => void
 }) {
 
@@ -28,7 +29,7 @@ export function RequestTypeForm({
       <div className="space-y-2">
         <Label htmlFor="name">{t("form.departmentName")}</Label>
         <Input
-          defaultValue={department?.name}
+          defaultValue={requestType?.name}
           id="name"
           {...register("name", { required: t('Name is required') })}
           aria-invalid={!!errors.name}
@@ -37,7 +38,7 @@ export function RequestTypeForm({
       </div>
       <Button type="submit" disabled={!isValid}
         className={!isValid ? "opacity-50 cursor-not-allowed w-full" : "w-full"}>
-        {department ? t("form.saveChanges") : t("form.createDepartment")}
+        {requestType ? t("form.saveChanges") : t("form.createDepartment")}
       </Button>
     </form>
   )
