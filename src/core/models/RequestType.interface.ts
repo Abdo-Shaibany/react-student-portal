@@ -1,7 +1,11 @@
+import { Department } from "./Department.interface";
+
 export interface RequestType {
     id?: string
     name: string
     totalRequests?: number
+    department?: Department
+    departmentId: string;
 }
 
 export interface RequestTypeReport {
@@ -14,4 +18,5 @@ export interface RequestTypeReport {
 export interface RequestTypeForm {
     id: string;
     name: string;
+    departmentId: string;
 }

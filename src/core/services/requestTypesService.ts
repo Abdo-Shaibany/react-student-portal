@@ -1,5 +1,6 @@
 // src/services/departmentService.ts
-import { Department, DepartmentReport } from "@/core/models/Department.interface";
+import { DepartmentReport } from "../models/Department.interface";
+import { RequestType } from "../models/RequestType.interface";
 import { BASE_URL } from "./api";
 
 const END_POINT = 'requestTypes';
@@ -18,7 +19,7 @@ export async function fetchRequestTypes(
     searchQuery?: string,
     pageSize?: number,
     page?: number
-): Promise<Department[]> {
+): Promise<RequestType[]> {
     const params = new URLSearchParams();
     if (order) params.append("order", order);
     if (searchQuery) params.append("search", searchQuery);
@@ -47,7 +48,7 @@ export async function deleteRequestTypeById(id: string): Promise<void> {
     return;
 }
 
-export async function createRequestType(department: Department): Promise<Department> {
+export async function createRequestType(department: RequestType): Promise<RequestType> {
     const response = await fetch(`${BASE_URL}/${END_POINT}`, {
         method: "POST",
         headers: getAuthHeaders(),
@@ -59,11 +60,12 @@ export async function createRequestType(department: Department): Promise<Departm
     return await response.json();
 }
 
-export async function updateRequestType(department: Department): Promise<Department> {
-    const response = await fetch(`${BASE_URL}/${END_POINT}/${department.id}`, {
+export async function updateRequestType(type: RequestType): Promise<RequestType> {
+    delete type.department;
+    const response = await fetch(`${BASE_URL}/${END_POINT}/${type.id}`, {
         method: "PUT",
         headers: getAuthHeaders(),
-        body: JSON.stringify(department),
+        body: JSON.stringify(type),
     });
     if (!response.ok) {
         throw new Error("Failed to update request type");

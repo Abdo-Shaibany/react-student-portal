@@ -25,18 +25,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import { Department } from "@/core/models/Department.interface"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RequestTypeForm } from "./RequestTypeForm"
 import { t } from "i18next"
 import ConfirmationModal from "@/components/confirm-deletion"
 import { createRequestType, deleteRequestTypeById, fetchRequestTypes, updateRequestType } from "@/core/services/requestTypesService"
+import { RequestType } from "@/core/models/RequestType.interface"
 
 export function RequestTypesPage() {
-  const [types, setTypes] = useState<Department[]>([])
+  const [types, setTypes] = useState<RequestType[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
-  const [selectedType, setSelectedType] = useState<Department | null>(null)
+  const [selectedType, setSelectedType] = useState<RequestType | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -97,13 +97,13 @@ export function RequestTypesPage() {
     }
   };
 
-  const handleSubmit = (values: { name: string }) => {
+  const handleSubmit = (values: { name: string, departmentId: string }) => {
     const updateOrcreateRequestType = async () => {
       setLoading(true);
       if (isEditMode && selectedType) {
-        await updateRequestType({ ...selectedType, name: values.name });
+        await updateRequestType({ ...selectedType, name: values.name, departmentId: values.departmentId });
       } else {
-        await createRequestType({ name: values.name });
+        await createRequestType({ name: values.name, departmentId: values.departmentId });
       }
       fetchAndSetRequestTypes();
       setLoading(false);
@@ -182,6 +182,7 @@ export function RequestTypesPage() {
         <TableHeader>
           <TableRow>
             <TableHead>{t('Request Type Name')}</TableHead>
+            <TableHead>{t('Department Name')}</TableHead>
             <TableHead>
               <Button
                 variant="ghost"
@@ -196,10 +197,11 @@ export function RequestTypesPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {types.map((department) => (
-            <TableRow key={department.id}>
-              <TableCell>{department.name}</TableCell>
-              <TableCell>{department.totalRequests}</TableCell>
+          {types.map((type) => (
+            <TableRow key={type.id}>
+              <TableCell>{type.name}</TableCell>
+              <TableCell>{type.department?.name}</TableCell>
+              <TableCell>{type.totalRequests}</TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
@@ -209,7 +211,7 @@ export function RequestTypesPage() {
                     <DropdownMenuItem
                       onClick={() => {
                         setIsEditMode(true);
-                        setSelectedType(department);
+                        setSelectedType(type);
                         setIsDialogOpen(true);
                       }}
                     >
@@ -217,7 +219,7 @@ export function RequestTypesPage() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-red-600"
-                      onClick={() => handleDeleteClick(department.id!)}
+                      onClick={() => handleDeleteClick(type.id!)}
                     >
                       {t('Delete')}
                     </DropdownMenuItem>
