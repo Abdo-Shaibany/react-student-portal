@@ -27,7 +27,7 @@ export function RequestTypeForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2">
-        <Label htmlFor="name">{t("form.departmentName")}</Label>
+        <Label htmlFor="name">{t("form.requestTypeName")}</Label>
         <Input
           defaultValue={requestType?.name}
           id="name"
@@ -38,7 +38,7 @@ export function RequestTypeForm({
       </div>
       <Button type="submit" disabled={!isValid}
         className={!isValid ? "opacity-50 cursor-not-allowed w-full" : "w-full"}>
-        {requestType ? t("form.saveChanges") : t("form.createDepartment")}
+        {requestType ? t("form.saveChanges") : t("form.createRequestType")}
       </Button>
     </form>
   )

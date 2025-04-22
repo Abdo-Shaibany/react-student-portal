@@ -94,8 +94,10 @@ const resources = {
       'No request types found': 'No request types found',
       "form": {
         "departmentName": "Department Name",
+        "requestTypeName": "Request Type Name",
         "saveChanges": "Save Changes",
         "createDepartment": "Create Department",
+        "createRequestType": "Create Request Type",
         "fullName": "Full Name",
         "phone": "Phone",
         "password": "Password",
@@ -294,8 +296,10 @@ const resources = {
       'No request types found': 'لم يتم العثور على أنواع الطلبات',
       "form": {
         "departmentName": "اسم القسم",
+        "requestTypeName": "اسم نوع الطلب",
         "saveChanges": "حفظ التغييرات",
         "createDepartment": "إنشاء قسم",
+        "createRequestType": "إنشاء نوع طلب",
         "fullName": "الاسم الكامل",
         "phone": "الهاتف",
         "password": "كلمة المرور",
