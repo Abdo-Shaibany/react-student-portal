@@ -11,12 +11,28 @@ export interface User {
     isAdmin: boolean
 }
 
+export interface StudentUser {
+    id?: string
+    name: string
+    phone: string
+    studentNo: string
+    password?: string
+}
+
 export interface UserFormData {
     id?: string;
     name: string;
     phone: string;
     password?: string;
     departmentId: string;
+}
+
+export interface StudentUserFormData {
+    id?: string;
+    name: string;
+    phone: string;
+    password?: string;
+    studentNo: string;
 }
 
 export interface ChangePasswordFormData {

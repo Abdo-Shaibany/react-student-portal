@@ -1,35 +1,42 @@
 import { TFunction } from "i18next";
 import { FileText, Home, LayoutDashboard, Settings2, Users } from "lucide-react";
 import { SideBarItem } from "../models/sidebar";
+import { AppRoutes } from "./routes";
 
 export const sidebarPages = (t: TFunction<"translation", undefined>): SideBarItem[] => [
     {
         title: t('navMain.dashboard'),
-        url: "/admin-portal/dashboard",
+        url: AppRoutes.DASHBOARD,
         icon: Home,
         isAdmin: true,
     },
     {
         title: t('navMain.departments'),
-        url: "/admin-portal/departments",
+        url: AppRoutes.DEPARTMENTS,
         icon: LayoutDashboard,
         isAdmin: true,
     },
     {
         title: t('navMain.requestTypes'),
-        url: "/admin-portal/requestTypes",
+        url: AppRoutes.REQUESTS_TYPES,
         icon: Settings2,
         isAdmin: true,
     },
     {
+        title: t('navMain.studentUserManagement'),
+        url: AppRoutes.STUDNETS_USERS,
+        icon: Users,
+        isAdmin: true
+    },
+    {
         title: t('navMain.userManagement'),
-        url: "/admin-portal/users",
+        url: AppRoutes.USERS,
         icon: Users,
         isAdmin: true
     },
     {
         title: t('navMain.studentRequests'),
-        url: "/admin-portal/requests",
+        url: AppRoutes.REQUESTS,
         icon: FileText,
         isAdmin: false,
     },

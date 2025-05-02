@@ -10,6 +10,7 @@ export const getBreadcrumbItems = (pathname: string) => {
         requestTypes: 'Request Types',
         'users': 'User Management',
         'requests': 'Student Requests',
+        'students-users': 'Students Accounts',
     }
 
     const breadcrumbMapAr: Record<string, string> = {
@@ -19,6 +20,7 @@ export const getBreadcrumbItems = (pathname: string) => {
         requestTypes: 'نوع الطلبات',
         'users': 'ادارة المستخدمين',
         'requests': 'طلبات الطلاب',
+        'students-users': 'حسابات الطلاب',
     }
 
     return pathSegments.map((segment, index) => {

@@ -65,7 +65,8 @@ const resources = {
         "departments": "Departments",
         "userManagement": "User Management",
         "studentRequests": "Student Requests",
-        "requestTypes": "Request Types"
+        "requestTypes": "Request Types",
+        studentUserManagement: "Student Accounts Management"
       },
       'Search departments...': 'Search departments...',
       'Search requests types...': 'Search requests types...',
@@ -115,7 +116,8 @@ const resources = {
         "edit": "Edit",
         "delete": "Delete",
         "noUsersFound": "No users found",
-        "unassigned": "Unassigned"
+        "unassigned": "Unassigned",
+        "studentNo": "Student Number",
       },
       "validation": {
         "nameMin": "Name must be at least 3 characters",
@@ -271,6 +273,7 @@ const resources = {
         "userManagement": "إدارة المستخدمين",
         "studentRequests": "طلبات الطلاب",
         "requestTypes": "نوع الطلبات",
+        studentUserManagement: "إدارة حسابات الطلاب"
       },
       'Search departments...': 'ابحث عن الأقسام...',
       'Search requests types...': 'ابحث عن أنواع الطلبات...',
@@ -320,7 +323,8 @@ const resources = {
         "edit": "تعديل",
         "delete": "حذف",
         "noUsersFound": "لم يتم العثور على مستخدمين",
-        "unassigned": "غير معين"
+        "unassigned": "غير معين",
+        "studentNo": "رقم الطالب",
       },
       "validation": {
         "nameMin": "يجب أن يكون الاسم 3 أحرف على الأقل",

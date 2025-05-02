@@ -11,6 +11,7 @@ import { RequestViewPage } from '@/pages/Requests/ViewRequest';
 import { isAdmin, isAuth } from '@/core/services/loginService';
 import { AppRoutes } from '@/core/enum/routes';
 import { RequestTypesPage } from '@/pages/RequestsTypes/RequestsTypes';
+import StudnetUsersPage from '@/pages/Students_Users/StudentsUsers';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (!isAuth()) {
@@ -47,6 +48,7 @@ const AppRoutesComponent = () => (
         <Route path={AppRoutes.REQUESTS_TYPES} element={<AlreadyAdmin><RequestTypesPage /></AlreadyAdmin>} />
         <Route path={AppRoutes.REQUESTS} element={<RequireAuth><RequestsPage /></RequireAuth>} />
         <Route path={AppRoutes.REQUEST_VIEW} element={<RequireAuth><RequestViewPage /></RequireAuth>} />
+        <Route path={AppRoutes.STUDNETS_USERS} element={<RequireAuth><StudnetUsersPage /></RequireAuth>} />
       </Route>
     </Routes>
   </BrowserRouter>

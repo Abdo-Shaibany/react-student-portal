@@ -8,5 +8,6 @@ export enum AppRoutes {
     USERS = "/admin-portal/users",
     REQUESTS_TYPES = "/admin-portal/requestTypes",
     REQUESTS = "/admin-portal/requests",
+    STUDNETS_USERS = "/admin-portal/students-users",
     REQUEST_VIEW = "/admin-portal/requests/:id",
 }
