@@ -10,7 +10,7 @@ function getAuthHeaders() {
     };
 }
 
-const end_point = '/student-users';
+const end_point = '/studentAccount';
 
 export async function fetchStudnetUsers(searchQuery?: string, sortOrder?: string): Promise<StudentUser[]> {
     const params = new URLSearchParams();

@@ -22,6 +22,25 @@ export async function submitLoginRequest(formData: LoginFormData): Promise<User>
     return data.user;
 }
 
+
+export async function submitSudentLoginRequest(formData: LoginFormData): Promise<User> {
+    const response = await fetch(`${BASE_URL}/auth/student-login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "charset": "utf-8",
+        },
+        body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to login");
+    }
+    const data = await response.json();
+
+    localStorage.setItem("token", data.token);
+    return data.user;
+}
+
 export async function submitChangePassword(
     formData: ChangePasswordFormData
 ): Promise<void> {
@@ -30,14 +49,31 @@ export async function submitChangePassword(
         throw new Error("Not authenticated")
     }
 
-    const response = await fetch(`${BASE_URL}/auth/change-password`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-    })
+    const tokenPart = token.split('.')[1];
+    const decodedString = Base64.decode(tokenPart);
+    const user = JSON.parse(decodedString);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let response: any;
+
+    if (user.studentNo) {
+        response = await fetch(`${BASE_URL}/auth/student-change-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+        })
+    } else
+        response = await fetch(`${BASE_URL}/auth/change-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+        })
 
     if (!response.ok) {
         // try to pull error message from API
