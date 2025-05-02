@@ -28,14 +28,13 @@ import { StudentUser, StudentUserFormData } from "@/core/models/User.interface";
 import { StudentUserForm } from "./StudentUserForm";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-// import { createUser, deleteUser, fetchUsers, updateUser } from "@/core/services/usersService";
 import ConfirmationModal from '@/components/confirm-deletion';
-
+import { fetchStudnetUsers, deleteStudentUser, updateStudentUser, createStudentUser } from "@/core/services/studentUsersService";
 export function StudnetUsersPage() {
   const { t } = useTranslation();
   const [users, setUsers] = useState<StudentUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder] = useState<"asc" | "desc">("asc");
   const [selectedUser, setSelectedUser] = useState<StudentUser | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -48,9 +47,8 @@ export function StudnetUsersPage() {
     const getUsers = async () => {
       try {
         setLoading(true);
-        // TODO: add service functions here :)
-        // const filtered = await fetchUsers(searchQuery, sortOrder);
-        // setUsers(filtered);
+        const filtered = await fetchStudnetUsers(searchQuery, sortOrder);
+        setUsers(filtered);
       } catch (error: any) {
         toast.error(error.message || t("error.fetchUsers"));
       } finally {
@@ -64,17 +62,14 @@ export function StudnetUsersPage() {
     setLoading(true);
     try {
       if (isEditMode && selectedUser) {
-        // TODO: this
-        // await updateUser(values.id!, values);
+        await updateStudentUser(values.id!, values);
         toast.success(t("success.userUpdated"));
       } else {
-        // TODO: this
-        // await createUser(values);
+        await createStudentUser(values);
         toast.success(t("success.userCreated"));
       }
-      // TODO: this
-      // const filtered = await fetchUsers(searchQuery, sortOrder);
-      // setUsers(filtered);
+      const filtered = await fetchStudnetUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.submitUser"));
     } finally {
@@ -97,12 +92,10 @@ export function StudnetUsersPage() {
   const handleConfirmDelete = async () => {
     setLoading(true);
     try {
-      // TODO: this
-      // await deleteUser(selectedUserId!);
+      await deleteStudentUser(selectedUserId!);
       toast.success(t("success.userDeleted"));
-      // TODO: this
-      // const filtered = await fetchUsers(searchQuery, sortOrder);
-      // setUsers(filtered);
+      const filtered = await fetchStudnetUsers(searchQuery, sortOrder);
+      setUsers(filtered);
     } catch (error: any) {
       toast.error(error.message || t("error.deleteUser"));
     } finally {
