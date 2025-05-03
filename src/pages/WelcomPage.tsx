@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ToggleLanguage } from "@/components/toggle-language";
+import { AppRoutes } from "@/core/enum/routes";
 
 export function WelcomePage() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export function WelcomePage() {
               <p className="text-gray-600 text-center">
                 {t("student_description")}
               </p>
-              <Button size="lg" onClick={() => navigate('/student-form')}>
+              <Button size="lg" onClick={() => navigate(AppRoutes.STUDNET_LOGIN)}>
                 {t("continue_as_student")}
               </Button>
             </div>

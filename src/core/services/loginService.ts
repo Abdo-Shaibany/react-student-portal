@@ -1,5 +1,5 @@
 import { LoginFormData } from "@/core/models/LoginForm.interface";
-import { ChangePasswordFormData, User } from "@/core/models/User.interface";
+import { ChangePasswordFormData, StudentUser, User } from "@/core/models/User.interface";
 import { Base64 } from 'js-base64';
 import { BASE_URL } from "./api";
 
@@ -94,10 +94,19 @@ export function isAuth(): boolean {
 
 export function isAdmin(): boolean {
     const user = getUser();
-    return user.isAdmin;
+    if ('isAdmin' in user && typeof user.isAdmin === 'boolean') {
+        return user.isAdmin;
+    }
+    return false;
 }
 
-export function getUser(): User {
+export function isStudent(): boolean {
+    const user = getUser();
+    return 'studentNo' in user && !!(user as StudentUser).studentNo;
+}
+
+
+export function getUser(): User | StudentUser {
     const token = localStorage.getItem("token");
     if (!token) return {
         phone: "771402072",

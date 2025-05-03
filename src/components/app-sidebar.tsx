@@ -11,11 +11,11 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { useTranslation } from "react-i18next"
-import { getUser, isAdmin } from "@/core/services/loginService"
+import { getUser } from "@/core/services/loginService"
 import { useEffect, useState } from "react"
-import { getRequestTodayReport } from "@/core/services/requestService"
-import { toast } from "sonner";
-import { User } from "@/core/models/User.interface"
+// import { getRequestTodayReport } from "@/core/services/requestService"
+// import { toast } from "sonner";
+import { StudentUser, User } from "@/core/models/User.interface"
 import { sidebarPages } from "@/core/enum/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -23,10 +23,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const { t } = useTranslation();
 
-  const [pages, setPages] = useState(sidebarPages(t).filter(page => page.isAdmin === isAdmin()));
+  const pages = sidebarPages(t);
 
 
-  const [user, setUser] = useState<User>({
+  const [user, setUser] = useState<User | StudentUser>({
     phone: '',
     departmentId: "",
     name: "",
@@ -35,32 +35,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   });
 
   useEffect(() => {
-    const handleAsyncTodayReport = async () => {
-      try {
-        const response = await getRequestTodayReport();
-        setPages(sidebarPages(t).filter(page => {
-          if(isAdmin()) return true;
-          return page.isAdmin !== true;
-        }).map(page => {
-          if (page.title === t('navMain.studentRequests')) {
-            return {
-              ...page,
-              badge: {
-                late: response.late,
-                new: response.pending
-              }
-            }
-          }
-          return page
-        }));
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    }
+    // const handleAsyncTodayReport = async () => {
+    //   try {
+    //     const response = await getRequestTodayReport();
+    //     setPages(sidebarPages(t).filter(page => {
+    //       if(isAdmin()) return true;
+    //       return page.isAdmin !== true;
+    //     }).map(page => {
+    //       if (page.title === t('navMain.studentRequests')) {
+    //         return {
+    //           ...page,
+    //           badge: {
+    //             late: response.late,
+    //             new: response.pending
+    //           }
+    //         }
+    //       }
+    //       return page
+    //     }));
+    //   } catch (error: any) {
+    //     toast.error(error.message);
+    //   }
+    // }
     
     setUser(getUser());
 
-    handleAsyncTodayReport();
+    // handleAsyncTodayReport();
   }, [t])
 
 

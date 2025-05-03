@@ -27,8 +27,8 @@ export interface Request {
 }
 
 export interface RequestForm {
-    fullName: string;
-    phone: string;
+    // fullName: string;
+    // phone: string;
     departmentId: string;
     requestTypeId: string;
     message: string;

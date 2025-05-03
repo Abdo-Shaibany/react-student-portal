@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
+// import { YemenPhoneValidations } from "@/core/validations/phone.validatation";
 import { RequestForm } from "@/core/models/Request.interface";
 import { useEffect, useState } from "react";
 import {
@@ -47,8 +47,8 @@ export function StudentFormPage() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('fullName', data.fullName);
-      formData.append('phone', data.phone);
+      // formData.append('fullName', data.fullName);
+      // formData.append('phone', data.phone);
       formData.append('departmentId', data.departmentId);
       formData.append('requestTypeId', data.requestTypeId);
       formData.append('message', data.message);
@@ -89,7 +89,7 @@ export function StudentFormPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           {/* Full Name */}
-          <div>
+          {/* <div>
             <Label htmlFor="fullName" className="block mb-1">
               {t('Full Name')}
             </Label>
@@ -103,10 +103,10 @@ export function StudentFormPage() {
                 {errors.fullName.message}
               </span>
             )}
-          </div>
+          </div> */}
 
           {/* Phone */}
-          <div>
+          {/* <div>
             <Label htmlFor="phone" className="block mb-1">
               {t('Phone')}
             </Label>
@@ -120,7 +120,7 @@ export function StudentFormPage() {
                 {t(errors.phone.message ?? '')}
               </span>
             )}
-          </div>
+          </div> */}
 
 
           {/* Department Dropdown */}

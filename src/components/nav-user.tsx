@@ -26,13 +26,13 @@ import {
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router-dom"
 import { logout, submitChangePassword } from "@/core/services/loginService"
-import { ChangePasswordFormData, User } from "@/core/models/User.interface"
+import { ChangePasswordFormData, StudentUser, User } from "@/core/models/User.interface"
 import { ChangePasswordModal } from "@/pages/ChangePasswordForm"
 
 export function NavUser({
   user,
 }: {
-  user: User
+  user: User | StudentUser
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();

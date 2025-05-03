@@ -12,6 +12,7 @@ import { isAdmin, isAuth } from '@/core/services/loginService';
 import { AppRoutes } from '@/core/enum/routes';
 import { RequestTypesPage } from '@/pages/RequestsTypes/RequestsTypes';
 import StudnetUsersPage from '@/pages/Students_Users/StudentsUsers';
+import StudentLoginPage from '@/pages/StudentLoginPage';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (!isAuth()) {
@@ -38,8 +39,8 @@ const AppRoutesComponent = () => (
   <BrowserRouter>
     <Routes>
       <Route path={AppRoutes.HOME} element={<AlreadyAuth><WelcomePage /></AlreadyAuth>} />
-      <Route path={AppRoutes.STUDENT_FORM} element={<AlreadyAuth><StudentFormPage /></AlreadyAuth>} />
       <Route path={AppRoutes.EMPLOYEE_LOGIN} element={<AlreadyAuth><EmployeeLoginPage /></AlreadyAuth>} />
+      <Route path={AppRoutes.STUDNET_LOGIN} element={<AlreadyAuth><StudentLoginPage /></AlreadyAuth>} />
       <Route path={AppRoutes.ADMIN_PORTAL} element={<EmployeeLayout />}>
         <Route index element={<RequireAuth><Navigate to={AppRoutes.DASHBOARD} replace /></RequireAuth>} />
         <Route path={AppRoutes.DASHBOARD} element={<AlreadyAdmin><DashboardPage /></AlreadyAdmin>} />
@@ -49,6 +50,7 @@ const AppRoutesComponent = () => (
         <Route path={AppRoutes.REQUESTS} element={<RequireAuth><RequestsPage /></RequireAuth>} />
         <Route path={AppRoutes.REQUEST_VIEW} element={<RequireAuth><RequestViewPage /></RequireAuth>} />
         <Route path={AppRoutes.STUDNETS_USERS} element={<RequireAuth><StudnetUsersPage /></RequireAuth>} />
+        <Route path={AppRoutes.STUDENT_FORM} element={<RequireAuth><StudentFormPage /></RequireAuth>} />
       </Route>
     </Routes>
   </BrowserRouter>
