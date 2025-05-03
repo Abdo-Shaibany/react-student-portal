@@ -25,6 +25,7 @@ import { Request } from "@/core/models/Request.interface"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useNavigate } from "react-router-dom"
+import { isStudent } from "@/core/services/loginService"
 
 export function RequestViewPage() {
 
@@ -37,6 +38,8 @@ export function RequestViewPage() {
 
   const [loading, setLoading] = useState(true);
   const [updateStatus, setUpdateStatus] = useState(0);
+
+  const studentUser = isStudent();
 
   useEffect(() => {
     const url = window.location.href;
@@ -105,7 +108,7 @@ export function RequestViewPage() {
       <div className="p-6 space-y-6">
         {/* Status Change Dialog */}
         <div className="flex items-center gap-2 justify-start">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          {!studentUser  && <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="ml-auto">{t("button.changeStatus")}</Button>
             </DialogTrigger>
@@ -141,7 +144,7 @@ export function RequestViewPage() {
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
+          </Dialog>}
 
           <span
             className={`px-2 mx-2 py-1 rounded-full text-sm ${statusColors[request.status]}`}

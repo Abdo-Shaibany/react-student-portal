@@ -48,15 +48,19 @@ export const sidebarPages = (t: TFunction<"translation", undefined>): SideBarIte
         },
     ];
 
-    if (!student) {
-        return list.filter(page => page.isAdmin === admin);
+    if (!student && !admin) {
+        return list.filter(page => page.isAdmin === false);
+    } else if (student) {
+        return [...list.filter(page => page.isAdmin === admin), {
+            title: t('Student Request Form'),
+            url: AppRoutes.STUDENT_FORM,
+            icon: FileText,
+            isAdmin: false,
+        },];
+    } else {
+        return list;
     }
 
-    return [...list.filter(page => page.isAdmin === admin), {
-        title: t('Student Request Form'),
-        url: AppRoutes.STUDENT_FORM,
-        icon: FileText,
-        isAdmin: false,
-    },];
+
 }
 
