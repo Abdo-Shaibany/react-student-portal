@@ -180,7 +180,6 @@ export function StudentFormPage() {
               id="message"
               placeholder={t('Type your message here')}
               rows={4}
-              {...register("message", { required: t('Message is required') })}
             />
             {errors.message && (
               <span className="text-red-500 text-sm">
