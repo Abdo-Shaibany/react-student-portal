@@ -31,7 +31,7 @@ export interface RequestForm {
     // phone: string;
     departmentId: string;
     requestTypeId: string;
-    message: string;
+    message?: string;
     fileUpload?: FileList;
 }
 

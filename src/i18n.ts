@@ -254,8 +254,8 @@ const resources = {
       "departmentRequestsOverview": "نظرة عامة على طلبات الأقسام",
       "completed": "مكتمل",
       "pending": "معلق",
-      "late": "متأخر",
-      "lateRequests": "الطلبات المتأخرة",
+      "late": "قيد التنفيذ",
+      "lateRequests": "الطلبات قيد التنفيذ",
       "filterByDepartment": "تصفية حسب القسم",
       "allDepartments": "جميع الأقسام",
       "requestId": "رقم الطلب",
@@ -265,7 +265,7 @@ const resources = {
       "daysLate": "أيام التأخير",
       "actions": "الإجراءات",
       "viewDetails": "عرض التفاصيل",
-      "noLateRequestsFound": "لم يتم العثور على طلبات متأخرة",
+      "noLateRequestsFound": "لم يتم العثور على طلبات قيد التنفيذ",
       "systemBrand": {
         "title": "نظام إدارة الطلبات الطلابية"
       },

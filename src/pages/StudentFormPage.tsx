@@ -51,7 +51,7 @@ export function StudentFormPage() {
       // formData.append('phone', data.phone);
       formData.append('departmentId', data.departmentId);
       formData.append('requestTypeId', data.requestTypeId);
-      formData.append('message', data.message);
+      formData.append('message', data.message ?? '');
 
       if (data.fileUpload && data.fileUpload.length > 0) {
         Array.from(data.fileUpload).forEach((file) => {
