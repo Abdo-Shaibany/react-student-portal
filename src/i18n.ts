@@ -132,7 +132,11 @@ const resources = {
         "fetchUsers": "Failed to fetch users",
         "submitUser": "Failed to submit user",
         "deleteUser": "Failed to delete user",
-        "selectEmployee": "Please select an employee."
+        "selectEmployee": "Please select an employee.",
+        "noFileSelected": "Please select an Excel file.",
+        "noSheetSelected": "Please select a sheet.",
+        "mappingIncomplete": "Please map all required columns.",
+        "importFailed": "Import failed for some rows."
       },
       "success": {
         "userUpdated": "User updated successfully",
@@ -181,17 +185,30 @@ const resources = {
         "moveToNewEmployee": "Move to New Employee",
         "confirmReassign": "Confirm Reassign",
         "changeStatus": "Change Status",
-        "updateStatus": "Update Status"
+        "updateStatus": "Update Status",
+        "importExcel": "Import via Excel",
+        "next": "Next",
+        "back": "Back",
+        "confirmImport": "Confirm Import"
       },
       "dialog": {
         "reassignRequest": "Reassign Request",
         "reassignDescription": "Select a new employee to assign this request to.",
         "updateRequestStatus": "Update Request Status",
-        "addStatusDescription": "Add a new status to the request"
+        "addStatusDescription": "Add a new status to the request",
+        "importExcelTitle": "Import Users from Excel",
+        "selectSheet": "Select Sheet",
+        "selectMapping": "Map Columns",
+        "previewData": "Preview Data"
       },
       "select": {
         "chooseEmployee": "Choose employee",
-        "newStatus": "Select new status"
+        "newStatus": "Select new status",
+        "chooseSheet": "Choose sheet",
+        "mapName": "Map Name column",
+        "mapStudentNo": "Map Student Number column",
+        "mapPhone": "Map Phone column",
+
       },
       "label": {
         "unassigned": "Unassigned",
@@ -199,30 +216,36 @@ const resources = {
         "phone": "Phone Number"
       },
       "text": {
-        "noMovements": "No movements recorded."
+        "noMovements": "No movements recorded.",
+        "noHeadersFound": "No headers found in sheet.",
+        "previewRows": "Preview Rows",
+        "importSummary": "{{successCount}} users imported, {{failCount}} failed."
       },
       "toast": {
-        "reassignedSuccessfully": "Request reassigned successfully."
-      },
-      "placeholder": {
-        "addComment": "Add comment..."
-      },
+        "reassignedSuccessfully": "Request reassigned successfully.",
+        "importStarted": "Import started...",
+        "importCompleted": "Import completed: {{successCount}} succeeded, {{failCount}} failed."
+      }
+    },
+    "placeholder": {
+      "addComment": "Add comment..."
+    },
 
-      "accordion": {
-        "studentInformation": "Student Information",
-        "requestTitle": "Request Title",
-        "message": "Message",
-        "attachedFiles": "Attached Files ({{count}})",
-        "statusHistory": "Status History",
-        "movements": "Movements"
-      },
-      "delete": "Delete",
-      "confirmDeleteTitle": "Are you sure you want to delete this?",
-      "confirmDeleteMessage": "This action cannot be undone.",
-      "cancel": "Cancel",
-      "confirm": "Confirm"
-    }
+    "accordion": {
+      "studentInformation": "Student Information",
+      "requestTitle": "Request Title",
+      "message": "Message",
+      "attachedFiles": "Attached Files ({{count}})",
+      "statusHistory": "Status History",
+      "movements": "Movements"
+    },
+    "delete": "Delete",
+    "confirmDeleteTitle": "Are you sure you want to delete this?",
+    "confirmDeleteMessage": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
+
   ar: {
     translation: {
       instructions: "تعليمات الطالب: سيتم معالجة طلبك في غضون 24 ساعة بعد إرسال طلبك.  ويرجى مراجعة الكلية ",
@@ -292,10 +315,15 @@ const resources = {
         studentUserManagement: "إدارة حسابات الطلاب"
       },
       "toast": {
-        "reassignedSuccessfully": "تم إعادة تعيين الطلب بنجاح."
+        "reassignedSuccessfully": "تم إعادة تعيين الطلب بنجاح.",
+        "importStarted": "جاري بدء الاستيراد...",
+        "importCompleted": "تم استكمال الاستيراد: {{successCount}} ناجح، {{failCount}} فشل."
       },
       "text": {
-        "noMovements": "لم يتم تسجيل أي تحركات."
+        "importSummary": "{{successCount}} مستخدمين تم استيرادهم، {{failCount}} فشلوا.",
+        "noMovements": "لم يتم تسجيل أي تحركات.",
+        "noHeadersFound": "لم يتم العثور على رؤوس في الورقة.",
+        "previewRows": "معاينة الصفوف",
       },
       'Search departments...': 'ابحث عن الأقسام...',
       'Search requests types...': 'ابحث عن أنواع الطلبات...',
@@ -360,7 +388,11 @@ const resources = {
         "fetchUsers": "فشل في جلب المستخدمين",
         "submitUser": "فشل في إرسال بيانات المستخدم",
         "deleteUser": "فشل في حذف المستخدم",
-        "selectEmployee": "الرجاء اختيار موظف."
+        "selectEmployee": "الرجاء اختيار موظف.",
+        "noFileSelected": "الرجاء اختيار ملف إكسل.",
+        "noSheetSelected": "الرجاء اختيار ورقة.",
+        "mappingIncomplete": "الرجاء تعيين جميع الأعمدة المطلوبة.",
+        "importFailed": "فشل في استيراد بعض الصفوف.",
       },
       "success": {
         "userUpdated": "تم تعديل المستخدم بنجاح",
@@ -410,16 +442,28 @@ const resources = {
         "updateStatus": "تحديث الحالة",
         "moveToNewEmployee": "نقل إلى موظف جديد",
         "confirmReassign": "تأكيد نقل المسؤول",
+        "importExcel": "استيراد عبر Excel",
+        "next": "التالي",
+        "back": "السابق",
+        "confirmImport": "تأكيد الاستيراد",
       },
       "dialog": {
         "updateRequestStatus": "تحديث حالة الطلب",
         "addStatusDescription": "أضف حالة جديدة للطلب",
         "reassignRequest": "نقل المسؤول",
         "reassignDescription": "اختر موظفًا جديدًا لassign هذا الطلب إليه.",
+        "importExcelTitle": "استيراد المستخدمين من Excel",
+        "selectSheet": "اختر الصفحة",
+        "selectMapping": "تعيين الأعمدة",
+        "previewData": "عرض المعاينة",
       },
       "select": {
         "newStatus": "اختر الحالة الجديدة",
         "chooseEmployee": "اختر الموظف",
+        "chooseSheet": "اختر الصفحة",
+        "mapName": "تعيين عمود الاسم",
+        "mapStudentNo": "تعيين عمود رقم الطالب",
+        "mapPhone": "تعيين عمود رقم الهاتف"
       },
       "placeholder": {
         "addComment": "أضف تعليق..."
@@ -443,7 +487,7 @@ const resources = {
       "cancel": "إلغاء",
       "confirm": "تأكيد"
     },
-  }
+  },
 };
 
 i18n
