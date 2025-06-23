@@ -26,6 +26,9 @@ import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useNavigate } from "react-router-dom"
 import { isStudent } from "@/core/services/loginService"
+import { User } from "@/core/models/User.interface"
+import { fetchUsers } from "@/core/services/usersService"
+import { createRequestMovement } from "@/core/services/requestMovementService"
 
 export function RequestViewPage() {
 
@@ -35,11 +38,23 @@ export function RequestViewPage() {
   const naviagte = useNavigate();
 
   const [request, setRequest] = useState<Request | undefined>();
-
+  
   const [loading, setLoading] = useState(true);
   const [updateStatus, setUpdateStatus] = useState(0);
 
   const studentUser = isStudent();
+
+  const [employees, setEmployees] = useState<User[]>(
+    []
+  );
+
+
+  const [isReassignDialogOpen, setIsReassignDialogOpen] = useState(false);
+  const [newAssigneeId, setNewAssigneeId] = useState<string>("");
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [newStatus, setNewStatus] = useState('')
+  const [comment, setComment] = useState('')
 
   useEffect(() => {
     const url = window.location.href;
@@ -66,9 +81,20 @@ export function RequestViewPage() {
     fetchRequest()
   }, [t, naviagte, updateStatus]);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [newStatus, setNewStatus] = useState('')
-  const [comment, setComment] = useState('')
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        const emps = await fetchUsers();
+        setEmployees(emps);
+      } catch (error: any) {
+        toast.error(
+          error.message || "Error fetching employees for reassignment"
+        );
+      }
+    };
+    loadEmployees();
+  }, []);
+
 
   const handleStatusChange = async () => {
     setLoading(true)
@@ -86,6 +112,25 @@ export function RequestViewPage() {
     }
   }
 
+  const handleReassign = async () => {
+    if (!request) return;
+    if (!newAssigneeId) {
+      toast.error(t("error.selectEmployee"));
+      return;
+    }
+    setLoading(true);
+    try {
+      await createRequestMovement(request.id, newAssigneeId);
+      toast.success(t("toast.reassignedSuccessfully"));
+
+      setIsReassignDialogOpen(false);
+      setNewAssigneeId("");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to reassign");
+    } finally {
+      setLoading(false);
+    }
+  };
 
     if (loading) {
       return (
@@ -152,6 +197,51 @@ export function RequestViewPage() {
             {t(`status.${request.status}`)}
           </span>
         </div>
+
+        {/* Reassign Button */}
+        {!studentUser && (
+          <Dialog
+            open={isReassignDialogOpen}
+            onOpenChange={setIsReassignDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button variant="outline">{t("button.moveToNewEmployee")}</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t("dialog.reassignRequest")}</DialogTitle>
+              </DialogHeader>
+              <DialogDescription className="sr-only">
+                {t("dialog.reassignDescription")}
+              </DialogDescription>
+              <div className="space-y-4">
+                <Select
+                  value={newAssigneeId}
+                  onValueChange={setNewAssigneeId}
+                  disabled={employees.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("select.chooseEmployee")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {employees.map((emp) => (
+                      <SelectItem key={emp.id} value={emp.id!}>
+                        {emp.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  className="w-full"
+                  onClick={handleReassign}
+                  disabled={!newAssigneeId}
+                >
+                  {t("button.confirmReassign")}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
 
         {/* Accordions Section */}
         <Accordion
@@ -282,6 +372,51 @@ export function RequestViewPage() {
               </div>
             </AccordionContent>
           </AccordionItem>
+
+          <AccordionItem value="movements">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{t("accordion.movements")}</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="p-4">
+            <div className="space-y-4">
+              {/* If your backend returns `request.RequestMovement` as an array */}
+              {Array.isArray(request.RequestMovement) && request.RequestMovement.length > 0 ? (
+                request.RequestMovement
+                  // optionally sort by date descending:
+                  .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .map((mov: any, idx: number) => (
+                    <div key={mov.id || idx} className="flex gap-4">
+                      <div className="flex flex-col items-center">
+                        {/* A dot */}
+                        <div className="h-3 w-3 rounded-full bg-gray-500" />
+                        {idx < request.RequestMovement.length - 1 && (
+                          <div className="w-px h-full bg-border" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {mov.assignedTo
+                              ? mov.assignedTo.name
+                              : t("label.unassigned")}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(mov.date).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  {t("text.noMovements")}
+                </p>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         </Accordion>
       </div>
     )

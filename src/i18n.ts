@@ -131,7 +131,8 @@ const resources = {
       "error": {
         "fetchUsers": "Failed to fetch users",
         "submitUser": "Failed to submit user",
-        "deleteUser": "Failed to delete user"
+        "deleteUser": "Failed to delete user",
+        "selectEmployee": "Please select an employee."
       },
       "success": {
         "userUpdated": "User updated successfully",
@@ -177,15 +178,31 @@ const resources = {
       "department.all": "All Departments",
       "employee.all": "All Employees",
       "button": {
+        "moveToNewEmployee": "Move to New Employee",
+        "confirmReassign": "Confirm Reassign",
         "changeStatus": "Change Status",
         "updateStatus": "Update Status"
       },
       "dialog": {
+        "reassignRequest": "Reassign Request",
+        "reassignDescription": "Select a new employee to assign this request to.",
         "updateRequestStatus": "Update Request Status",
         "addStatusDescription": "Add a new status to the request"
       },
       "select": {
+        "chooseEmployee": "Choose employee",
         "newStatus": "Select new status"
+      },
+      "label": {
+        "unassigned": "Unassigned",
+        "name": "Name",
+        "phone": "Phone Number"
+      },
+      "text": {
+        "noMovements": "No movements recorded."
+      },
+      "toast": {
+        "reassignedSuccessfully": "Request reassigned successfully."
       },
       "placeholder": {
         "addComment": "Add comment..."
@@ -196,11 +213,8 @@ const resources = {
         "requestTitle": "Request Title",
         "message": "Message",
         "attachedFiles": "Attached Files ({{count}})",
-        "statusHistory": "Status History"
-      },
-      "label": {
-        "name": "Name",
-        "phone": "Phone Number"
+        "statusHistory": "Status History",
+        "movements": "Movements"
       },
       "delete": "Delete",
       "confirmDeleteTitle": "Are you sure you want to delete this?",
@@ -277,6 +291,12 @@ const resources = {
         "requestTypes": "نوع الطلبات",
         studentUserManagement: "إدارة حسابات الطلاب"
       },
+      "toast": {
+        "reassignedSuccessfully": "تم إعادة تعيين الطلب بنجاح."
+      },
+      "text": {
+        "noMovements": "لم يتم تسجيل أي تحركات."
+      },
       'Search departments...': 'ابحث عن الأقسام...',
       'Search requests types...': 'ابحث عن أنواع الطلبات...',
       'Create Department': 'أنشئ قسم',
@@ -339,7 +359,8 @@ const resources = {
       "error": {
         "fetchUsers": "فشل في جلب المستخدمين",
         "submitUser": "فشل في إرسال بيانات المستخدم",
-        "deleteUser": "فشل في حذف المستخدم"
+        "deleteUser": "فشل في حذف المستخدم",
+        "selectEmployee": "الرجاء اختيار موظف."
       },
       "success": {
         "userUpdated": "تم تعديل المستخدم بنجاح",
@@ -386,14 +407,19 @@ const resources = {
       "employee.all": "جميع الموظفين",
       "button": {
         "changeStatus": "تغيير الحالة",
-        "updateStatus": "تحديث الحالة"
+        "updateStatus": "تحديث الحالة",
+        "moveToNewEmployee": "نقل إلى موظف جديد",
+        "confirmReassign": "تأكيد نقل المسؤول",
       },
       "dialog": {
         "updateRequestStatus": "تحديث حالة الطلب",
-        "addStatusDescription": "أضف حالة جديدة للطلب"
+        "addStatusDescription": "أضف حالة جديدة للطلب",
+        "reassignRequest": "نقل المسؤول",
+        "reassignDescription": "اختر موظفًا جديدًا لassign هذا الطلب إليه.",
       },
       "select": {
-        "newStatus": "اختر الحالة الجديدة"
+        "newStatus": "اختر الحالة الجديدة",
+        "chooseEmployee": "اختر الموظف",
       },
       "placeholder": {
         "addComment": "أضف تعليق..."
@@ -403,11 +429,13 @@ const resources = {
         "requestTitle": "عنوان الطلب",
         "message": "الرسالة",
         "attachedFiles": "الملفات المرفقة ({{count}})",
-        "statusHistory": "تاريخ الحالة"
+        "statusHistory": "تاريخ الحالة",
+        "movements": "التحويلات"
       },
       "label": {
         "name": "الاسم",
-        "phone": "رقم الهاتف"
+        "phone": "رقم الهاتف",
+        "unassigned": "غير معين",
       },
       "delete": "حذف",
       "confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذا؟",

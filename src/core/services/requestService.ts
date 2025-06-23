@@ -58,6 +58,7 @@ export async function fetchRequestCountsDaily(): Promise<RequestDailyCount[]> {
         method: "GET",
         headers: getHeaders(),
     });
+
     if (!response.ok) {
         throw new Error("Failed to fetch request counts daily");
     }

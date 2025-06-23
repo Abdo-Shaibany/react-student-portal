@@ -3,6 +3,12 @@ import { Department } from "./Department.interface"
 import { RequestType } from "./RequestType.interface"
 import { User } from "./User.interface"
 
+export interface CreateRequestMovementData {
+    requestId: string;
+    assignedToId?: string | null;
+    date?: Date;
+}
+
 export interface Request {
     id: string
     requestNumber: string
@@ -23,7 +29,8 @@ export interface Request {
         status: RequestStatus
         date: string
         comment?: string
-    }[]
+    }[];
+    RequestMovement: CreateRequestMovementData[];
 }
 
 export interface RequestForm {
